@@ -1,10 +1,16 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 
 function jsonResponse($code, $message, $data = [], $status = 200): void {
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
     http_response_code($status);
     echo json_encode([
         'success' => $code === 0,
@@ -94,6 +100,11 @@ function getOrderState(array $orders, string $orderId): array {
 }
 
 try {
+    if ($method === 'OPTIONS') {
+        http_response_code(204);
+        exit;
+    }
+
     if ($requestUri === '/health') {
         jsonResponse(0, 'ok', ['service' => 'kmgrnet-likeshop', 'timestamp' => date('c')]);
     }
