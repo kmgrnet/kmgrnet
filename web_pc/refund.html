@@ -35,7 +35,8 @@
       </div>
       <div class="flex gap-3">
         <a href="/admin.html" class="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200">返回后台</a>
-        <a href="/" class="rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan px-4 py-2 text-sm font-medium text-white">返回首页</a>
+        <a href="/"
+          class="rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan px-4 py-2 text-sm font-medium text-white">返回首页</a>
       </div>
     </div>
 
@@ -97,7 +98,8 @@
         <div class="space-y-2 text-sm text-slate-300">
           <div class="flex justify-between"><span>待审核</span><span class="text-yellow-400">{{ reviewCount }}</span></div>
           <div class="flex justify-between"><span>退款中</span><span class="text-red-400">{{ inProcessCount }}</span></div>
-          <div class="flex justify-between"><span>已退款</span><span class="text-green-400">{{ completedCount }}</span></div>
+          <div class="flex justify-between"><span>已退款</span><span class="text-green-400">{{ completedCount }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -105,13 +107,15 @@
     <div class="mb-8 bg-slate-900 rounded-2xl border border-slate-800 p-4">
       <p class="text-slate-400 text-sm mb-3">渠道结算占比</p>
       <div class="grid gap-3 md:grid-cols-3">
-        <div v-for="channel in channelBreakdown" :key="channel.name" class="rounded-xl border border-slate-800 bg-slate-800/40 p-3">
+        <div v-for="channel in channelBreakdown" :key="channel.name"
+          class="rounded-xl border border-slate-800 bg-slate-800/40 p-3">
           <div class="flex items-center justify-between text-sm">
             <span class="text-slate-300">{{ channel.label }}</span>
             <span class="text-white font-medium">¥ {{ Number(channel.amount || 0).toFixed(2) }}</span>
           </div>
           <div class="mt-3 h-2 rounded-full bg-slate-800">
-            <div class="h-2 rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan" :style="{ width: channel.percent + '%' }"></div>
+            <div class="h-2 rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan"
+              :style="{ width: channel.percent + '%' }"></div>
           </div>
           <p class="mt-2 text-xs text-slate-500">{{ channel.count }} 笔 · {{ channel.percent }}%</p>
         </div>
@@ -124,7 +128,8 @@
           <h2 class="text-lg font-bold text-white">退款申请列表</h2>
           <p class="text-sm text-slate-400">人工审核与对账状态</p>
         </div>
-        <button @click="exportRefunds" class="rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-200">导出明细</button>
+        <button @click="exportRefunds"
+          class="rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-200">导出明细</button>
       </div>
       <table class="min-w-full text-sm">
         <thead class="bg-slate-800 text-slate-300">
@@ -143,10 +148,13 @@
             <td class="px-4 py-3 font-mono text-slate-200">{{ item.order_id }}</td>
             <td class="px-4 py-3">{{ item.customer }}</td>
             <td class="px-4 py-3">¥ {{ Number(item.amount || 0).toFixed(2) }}</td>
-            <td class="px-4 py-3" :class="item.status === '待审核' ? 'text-yellow-400' : item.status === '已退款' ? 'text-green-400' : item.status === '退款中' ? 'text-red-400' : 'text-slate-300'">{{ item.status }}</td>
+            <td class="px-4 py-3"
+              :class="item.status === '待审核' ? 'text-yellow-400' : item.status === '已退款' ? 'text-green-400' : item.status === '退款中' ? 'text-red-400' : 'text-slate-300'">
+              {{ item.status }}</td>
             <td class="px-4 py-3">{{ item.reason }}</td>
             <td class="px-4 py-3">{{ item.updated_at }}</td>
-            <td class="px-4 py-3"><button @click="reviewRefund(item)" class="text-gr-cyan">{{ item.status === '待审核' ? '审核' : '查看' }}</button></td>
+            <td class="px-4 py-3"><button @click="reviewRefund(item)" class="text-gr-cyan">{{ item.status === '待审核' ?
+                '审核' : '查看' }}</button></td>
           </tr>
         </tbody>
       </table>
@@ -159,7 +167,8 @@
             <h2 class="text-xl font-semibold text-white">退款审核</h2>
             <p class="text-sm text-slate-400">订单号：{{ selectedRefund.order_id }}</p>
           </div>
-          <button @click="selectedRefund = null" class="rounded-full border border-slate-700 px-3 py-1 text-sm text-slate-300">关闭</button>
+          <button @click="selectedRefund = null"
+            class="rounded-full border border-slate-700 px-3 py-1 text-sm text-slate-300">关闭</button>
         </div>
         <div class="space-y-4 text-sm text-slate-300">
           <div class="rounded-2xl border border-slate-800 bg-slate-800/50 p-4">
@@ -172,19 +181,22 @@
           </div>
           <div class="rounded-2xl border border-slate-800 bg-slate-800/50 p-4">
             <p class="text-slate-400">审核说明</p>
-            <textarea v-model="reviewReason" rows="3" class="w-full mt-2 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200 focus:border-gr-cyan outline-none"></textarea>
+            <textarea v-model="reviewReason" rows="3"
+              class="w-full mt-2 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200 focus:border-gr-cyan outline-none"></textarea>
           </div>
         </div>
         <div class="mt-6 flex gap-3 justify-end">
-          <button @click="rejectRefund" class="rounded-full border border-red-500/60 px-4 py-2 text-sm text-red-300">拒绝退款</button>
-          <button @click="approveRefund" class="rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan px-4 py-2 text-sm font-medium text-white">批准退款</button>
+          <button @click="rejectRefund"
+            class="rounded-full border border-red-500/60 px-4 py-2 text-sm text-red-300">拒绝退款</button>
+          <button @click="approveRefund"
+            class="rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan px-4 py-2 text-sm font-medium text-white">批准退款</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const API_BASE = window.__API_BASE__ || '';
+    const API_BASE = window.__API_BASE__ || 'https://api.kmgrnet.com';
     const apiUrl = (path) => `${API_BASE}${path}`;
 
     const { createApp, computed, onMounted, ref } = Vue;

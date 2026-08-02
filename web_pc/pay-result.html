@@ -93,6 +93,9 @@
   </div>
 
   <script>
+    const API_BASE = window.__API_BASE__ || 'https://api.kmgrnet.com';
+    const apiUrl = (path) => `${API_BASE}${path}`;
+
     const { createApp, ref, onMounted, onUnmounted } = Vue;
     createApp({
       setup() {

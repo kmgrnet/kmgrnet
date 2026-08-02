@@ -273,22 +273,30 @@
         </div>
         <div class="grid gap-5 md:grid-cols-4">
           <div class="glass-panel rounded-3xl p-5 border border-white/10">
-            <div class="w-10 h-10 rounded-full bg-gr-blue/20 text-gr-cyan flex items-center justify-center mb-4 font-bold">1</div>
+            <div
+              class="w-10 h-10 rounded-full bg-gr-blue/20 text-gr-cyan flex items-center justify-center mb-4 font-bold">
+              1</div>
             <h3 class="text-lg font-bold text-white">需求诊断</h3>
             <p class="text-slate-400 mt-2 text-sm">明确业务目标、用户场景与预算边界，进行可行性评估。</p>
           </div>
           <div class="glass-panel rounded-3xl p-5 border border-white/10">
-            <div class="w-10 h-10 rounded-full bg-gr-blue/20 text-gr-cyan flex items-center justify-center mb-4 font-bold">2</div>
+            <div
+              class="w-10 h-10 rounded-full bg-gr-blue/20 text-gr-cyan flex items-center justify-center mb-4 font-bold">
+              2</div>
             <h3 class="text-lg font-bold text-white">方案设计</h3>
             <p class="text-slate-400 mt-2 text-sm">结合数字化、工程与供应链能力，输出分阶段落地方案。</p>
           </div>
           <div class="glass-panel rounded-3xl p-5 border border-white/10">
-            <div class="w-10 h-10 rounded-full bg-gr-blue/20 text-gr-cyan flex items-center justify-center mb-4 font-bold">3</div>
+            <div
+              class="w-10 h-10 rounded-full bg-gr-blue/20 text-gr-cyan flex items-center justify-center mb-4 font-bold">
+              3</div>
             <h3 class="text-lg font-bold text-white">实施交付</h3>
             <p class="text-slate-400 mt-2 text-sm">前端页面、云部署、安防施工与采购环节同步推进，确保执行质量。</p>
           </div>
           <div class="glass-panel rounded-3xl p-5 border border-white/10">
-            <div class="w-10 h-10 rounded-full bg-gr-blue/20 text-gr-cyan flex items-center justify-center mb-4 font-bold">4</div>
+            <div
+              class="w-10 h-10 rounded-full bg-gr-blue/20 text-gr-cyan flex items-center justify-center mb-4 font-bold">
+              4</div>
             <h3 class="text-lg font-bold text-white">持续优化</h3>
             <p class="text-slate-400 mt-2 text-sm">提供运营支持、数据反馈与后续迭代，让业务持续增长。</p>
           </div>
@@ -476,7 +484,7 @@
   </div>
 
   <script>
-    const API_BASE = window.__API_BASE__ || '';
+    const API_BASE = window.__API_BASE__ || 'https://api.kmgrnet.com';
     const apiUrl = (path) => `${API_BASE}${path}`;
 
     const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
