@@ -1,0 +1,29 @@
+# Local env and secrets
+.env
+.env.*
+*.local
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# Build / dependency caches
+node_modules/
+.npm/
+.pnpm-store/
+.cache/
+__pycache__/
+*.pyc
+
+# Docker local data
+mysql/data/
+redis/data/
+
+# Logs
+*.log
+
+# Misc common output
+coverage/
+dist/
+build/

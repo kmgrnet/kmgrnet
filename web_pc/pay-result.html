@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>支付结果 - 光润网络科技</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            gr: {
+              900: '#0B1121',
+              800: '#151E32',
+              blue: '#3B82F6',
+              cyan: '#06B6D4'
+            }
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+  <div id="app" class="max-w-5xl mx-auto p-6">
+    <div class="bg-slate-900 rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden">
+      <div class="border-b border-slate-800 px-8 py-6">
+        <div :class="isPaid ? 'bg-green-500/20' : 'bg-yellow-500/20'"
+          class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i :class="isPaid ? 'fa-solid fa-check text-green-400' : 'fa-solid fa-circle-notch fa-spin text-yellow-400'"
+            class="text-3xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white text-center">{{ isPaid ? '支付成功' : '支付结果同步中' }}</h1>
+        <p class="text-slate-400 mt-2 text-center">{{ statusMessage }}</p>
+      </div>
+
+      <div class="p-8">
+        <div v-if="loading" class="rounded-2xl border border-slate-800 bg-slate-800/60 p-6 text-slate-400 text-center">
+          正在查询支付状态，请稍候...
+        </div>
+        <div v-else-if="order" class="space-y-6">
+          <div class="rounded-3xl border border-slate-800 bg-slate-800/60 p-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div>
+                <p class="text-sm text-slate-400">收款凭证</p>
+                <p class="font-mono text-white text-lg mt-1">{{ order.order_id }}</p>
+              </div>
+              <div :class="isPaid ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'"
+                class="rounded-full px-4 py-2 text-sm font-medium inline-flex">
+                {{ order.status_text }}
+              </div>
+            </div>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+              <p class="text-sm text-slate-400">服务名称</p>
+              <p class="text-white mt-1">{{ order.title }}</p>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+              <p class="text-sm text-slate-400">支付金额</p>
+              <p class="text-white mt-1">¥{{ order.amount }}</p>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+              <p class="text-sm text-slate-400">支付方式</p>
+              <p class="text-white mt-1">{{ order.pay_method }}</p>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+              <p class="text-sm text-slate-400">支付渠道</p>
+              <p class="text-white mt-1">{{ order.channel || '系统模拟渠道' }}</p>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-sm text-slate-300">
+            <p><span class="text-slate-400">创建时间：</span>{{ order.created_at }}</p>
+            <p class="mt-2"><span class="text-slate-400">支付时间：</span>{{ order.paid_at || '尚未支付' }}</p>
+            <p class="mt-2"><span class="text-slate-400">同步状态：</span>{{ isPaid ? '已完成' : '等待确认' }}</p>
+          </div>
+        </div>
+
+        <div class="mt-8 flex justify-center gap-3">
+          <a href="/" class="px-4 py-2 rounded-xl bg-slate-800 text-white">返回首页</a>
+          <a href="/admin.html"
+            class="px-4 py-2 rounded-xl bg-gradient-to-r from-gr-blue to-gr-cyan text-white">查看后台</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, onMounted, onUnmounted } = Vue;
+    createApp({
+      setup() {
+        const order = ref(null);
+        const loading = ref(true);
+        const isPaid = ref(false);
+        const statusMessage = ref('订单正在同步，请稍候。');
+        let pollTimer = null;
+
+        const stopPolling = () => {
+          if (pollTimer) {
+            clearTimeout(pollTimer);
+            pollTimer = null;
+          }
+        };
+
+        const loadOrder = async (attempt = 0) => {
+          const params = new URLSearchParams(window.location.search);
+          const orderId = params.get('order_id');
+          if (!orderId) {
+            loading.value = false;
+            statusMessage.value = '缺少订单编号，无法查询支付状态。';
+            return;
+          }
+          try {
+            const response = await fetch(`/api/order/detail?order_id=${encodeURIComponent(orderId)}`);
+            const result = await response.json();
+            order.value = result.data || null;
+            isPaid.value = Boolean(result?.data?.is_paid);
+            if (isPaid.value) {
+              loading.value = false;
+              statusMessage.value = '支付状态已确认，订单已完成。';
+              stopPolling();
+              return;
+            }
+            if (attempt < 5) {
+              loading.value = true;
+              statusMessage.value = `正在同步支付结果（${attempt + 1}/5）...`;
+              pollTimer = window.setTimeout(() => loadOrder(attempt + 1), 2500);
+            } else {
+              loading.value = false;
+              statusMessage.value = '支付仍在确认中，可稍后回到后台查看订单状态。';
+            }
+          } catch (error) {
+            loading.value = false;
+            statusMessage.value = '获取订单状态时出现异常，请稍后重试。';
+          }
+        };
+
+        onMounted(() => {
+          loadOrder();
+        });
+        onUnmounted(() => {
+          stopPolling();
+        });
+        return { order, loading, isPaid, statusMessage };
+      }
+    }).mount('#app');
+  </script>
+</body>
+
+</html>

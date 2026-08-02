@@ -1,0 +1,65 @@
+services:
+  nginx:
+    image: nginx:1.24-alpine
+    container_name: kmgrnet-nginx
+    restart: always
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./web_pc:/usr/share/nginx/html/pc:ro
+      - ./web_h5:/usr/share/nginx/html/h5:ro
+      - ./likeshop:/var/www/html/likeshop
+    depends_on:
+      - php
+      - mysql
+      - redis
+    networks:
+      - kmgrnet-network
+
+  php:
+    build:
+      context: .
+      dockerfile: docker/php.Dockerfile
+    container_name: kmgrnet-php
+    restart: always
+    working_dir: /var/www/html/likeshop
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-GuangRun_DB_Pass_2026}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-likeshop_db}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: root
+    volumes:
+      - ./likeshop:/var/www/html/likeshop
+    networks:
+      - kmgrnet-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: kmgrnet-mysql
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-GuangRun_DB_Pass_2026}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-likeshop_db}
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    networks:
+      - kmgrnet-network
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: kmgrnet-redis
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-GuangRun_Redis_Pass_2026}
+    volumes:
+      - ./redis/data:/data
+    networks:
+      - kmgrnet-network
+
+networks:
+  kmgrnet-network:
+    driver: bridge

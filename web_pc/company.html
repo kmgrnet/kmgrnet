@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>公司风采 - 光润网络科技</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            gr: {
+              900: '#0B1121',
+              800: '#151E32',
+              blue: '#3B82F6',
+              cyan: '#06B6D4'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+
+<body class="bg-gr-900 text-slate-300 min-h-screen">
+  <div id="app" class="min-h-screen">
+    <nav class="sticky top-0 z-10 glass-panel">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gr-blue to-gr-cyan text-white font-black flex items-center justify-center">GR</div>
+          <div>
+            <div class="text-white font-bold">光润网络科技</div>
+            <div class="text-xs text-slate-400">公司风采与团队</div>
+          </div>
+        </a>
+        <div class="flex items-center gap-3">
+          <a href="/admin.html" class="text-sm text-gr-cyan">订单后台</a>
+          <a href="/refund.html" class="text-sm text-gr-cyan">对账中心</a>
+          <a href="/" class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white text-sm">返回首页</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+      <section class="mb-16">
+        <div class="grid gap-8 lg:grid-cols-2 items-center">
+          <div>
+            <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">公司风采</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-white mt-4 leading-tight">用技术与工程，把复杂场景变成稳定增长</h1>
+            <p class="text-slate-400 mt-5 leading-relaxed text-lg">我们在数字产品、安防工程、供应链服务三大领域协同推进，以标准化协作和持续迭代，帮助企业更快落地业务和更稳地运营。</p>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="glass-panel rounded-3xl p-6">
+              <div class="text-gr-cyan text-3xl mb-3"><i class="fa-solid fa-rocket"></i></div>
+              <div class="text-3xl font-bold text-white">8+</div>
+              <div class="text-sm text-slate-400 mt-2">年行业实践</div>
+            </div>
+            <div class="glass-panel rounded-3xl p-6">
+              <div class="text-gr-cyan text-3xl mb-3"><i class="fa-solid fa-users"></i></div>
+              <div class="text-3xl font-bold text-white">30+</div>
+              <div class="text-sm text-slate-400 mt-2">专业协作成员</div>
+            </div>
+            <div class="glass-panel rounded-3xl p-6">
+              <div class="text-gr-cyan text-3xl mb-3"><i class="fa-solid fa-shield-halved"></i></div>
+              <div class="text-3xl font-bold text-white">100%</div>
+              <div class="text-sm text-slate-400 mt-2">交付闭环</div>
+            </div>
+            <div class="glass-panel rounded-3xl p-6">
+              <div class="text-gr-cyan text-3xl mb-3"><i class="fa-solid fa-chart-line"></i></div>
+              <div class="text-3xl font-bold text-white">3x</div>
+              <div class="text-sm text-slate-400 mt-2">业务增长模型</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-16">
+        <div class="mb-8">
+          <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">企业图册</p>
+          <h2 class="text-3xl font-bold text-white mt-3">办公、项目与协作现场</h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <div class="glass-panel rounded-3xl p-4">
+            <div class="h-52 rounded-2xl bg-gradient-to-br from-sky-500/30 to-cyan-500/10 flex items-end p-4">
+              <span class="text-lg font-semibold text-white">办公空间</span>
+            </div>
+            <p class="text-slate-400 mt-3 text-sm">集中式协作区，支持项目管理、方案评审和客户沟通。</p>
+          </div>
+          <div class="glass-panel rounded-3xl p-4">
+            <div class="h-52 rounded-2xl bg-gradient-to-br from-violet-500/30 to-indigo-500/10 flex items-end p-4">
+              <span class="text-lg font-semibold text-white">研发会议</span>
+            </div>
+            <p class="text-slate-400 mt-3 text-sm">跨团队协作的开发与设计会审流程，保证方案落地效率。</p>
+          </div>
+          <div class="glass-panel rounded-3xl p-4">
+            <div class="h-52 rounded-2xl bg-gradient-to-br from-emerald-500/30 to-green-500/10 flex items-end p-4">
+              <span class="text-lg font-semibold text-white">工程现场</span>
+            </div>
+            <p class="text-slate-400 mt-3 text-sm">对弱电、安防和网络工程执行现场勘察和真实部署。</p>
+          </div>
+          <div class="glass-panel rounded-3xl p-4">
+            <div class="h-52 rounded-2xl bg-gradient-to-br from-amber-500/30 to-orange-500/10 flex items-end p-4">
+              <span class="text-lg font-semibold text-white">项目协作</span>
+            </div>
+            <p class="text-slate-400 mt-3 text-sm">从方案、采购、施工到验收的统一协作机制，保障交付质量。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-16">
+        <div class="mb-8">
+          <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">企业能力</p>
+          <h2 class="text-3xl font-bold text-white mt-3">一体化协作，连接产品、工程与经营</h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-3">
+          <div class="glass-panel rounded-3xl p-6">
+            <div class="text-gr-cyan text-2xl mb-3"><i class="fa-solid fa-layer-group"></i></div>
+            <h3 class="text-xl font-bold text-white">品牌与订单</h3>
+            <p class="text-slate-400 mt-3">统一官网、商城与后台流程，让客户体验、订单管理和结算数据保持一致。</p>
+          </div>
+          <div class="glass-panel rounded-3xl p-6">
+            <div class="text-gr-cyan text-2xl mb-3"><i class="fa-solid fa-sitemap"></i></div>
+            <h3 class="text-xl font-bold text-white">工程与交付</h3>
+            <p class="text-slate-400 mt-3">从现场勘测、网络、监控到施工与验收，形成标准化执行闭环。</p>
+          </div>
+          <div class="glass-panel rounded-3xl p-6">
+            <div class="text-gr-cyan text-2xl mb-3"><i class="fa-solid fa-chart-pie"></i></div>
+            <h3 class="text-xl font-bold text-white">数据与经营</h3>
+            <p class="text-slate-400 mt-3">基于实时订单、退款和对账数据，帮助管理层做出更准确的经营决策。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-16">
+        <div class="mb-8">
+          <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">荣誉资质</p>
+          <h2 class="text-3xl font-bold text-white mt-3">专业能力与行业信任</h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-3">
+          <div class="glass-panel rounded-3xl p-6">
+            <div class="text-gr-cyan text-2xl mb-3"><i class="fa-solid fa-award"></i></div>
+            <h3 class="text-xl font-bold text-white">数字化服务能力</h3>
+            <p class="text-slate-400 mt-3">具备网站建设、商城、小程序、后台系统等全链路交付能力。</p>
+          </div>
+          <div class="glass-panel rounded-3xl p-6">
+            <div class="text-gr-cyan text-2xl mb-3"><i class="fa-solid fa-certificate"></i></div>
+            <h3 class="text-xl font-bold text-white">工程施工资质</h3>
+            <p class="text-slate-400 mt-3">覆盖弱电工程、门禁、安防项目、网络布线与验收等一站式执行。</p>
+          </div>
+          <div class="glass-panel rounded-3xl p-6">
+            <div class="text-gr-cyan text-2xl mb-3"><i class="fa-solid fa-handshake"></i></div>
+            <h3 class="text-xl font-bold text-white">合作信任机制</h3>
+            <p class="text-slate-400 mt-3">以标准化交付、可视化进度、持续服务保障客户合作体验。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-16">
+        <div class="mb-8">
+          <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">团队介绍</p>
+          <h2 class="text-3xl font-bold text-white mt-3">跨领域协作，持续创造价值</h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-3">
+          <div class="glass-panel rounded-3xl p-6">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-gr-blue to-gr-cyan flex items-center justify-center text-xl font-bold text-white mb-4">A</div>
+            <h3 class="text-xl font-bold text-white">架构与研发</h3>
+            <p class="text-slate-400 mt-3">负责前端、后端、部署与产品化落地，确保系统可持续运行。</p>
+          </div>
+          <div class="glass-panel rounded-3xl p-6">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-gr-blue to-gr-cyan flex items-center justify-center text-xl font-bold text-white mb-4">E</div>
+            <h3 class="text-xl font-bold text-white">工程与施工</h3>
+            <p class="text-slate-400 mt-3">负责现场勘测、安防工程和弱电系统交付，确保项目质量与稳定。</p>
+          </div>
+          <div class="glass-panel rounded-3xl p-6">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-gr-blue to-gr-cyan flex items-center justify-center text-xl font-bold text-white mb-4">S</div>
+            <h3 class="text-xl font-bold text-white">供应链与运营</h3>
+            <p class="text-slate-400 mt-3">持续整合物料、采购和运营维度，建设更稳健的业务闭环。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-16">
+        <div class="mb-8">
+          <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">案例分享</p>
+          <h2 class="text-3xl font-bold text-white mt-3">从业务场景到持续增长的落地案例</h2>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2">
+          <div class="glass-panel rounded-3xl p-6">
+            <div class="text-sm text-gr-cyan mb-3">客户故事：本地企业数字化升级</div>
+            <h3 class="text-2xl font-bold text-white">从传统宣传到线上经营闭环</h3>
+            <p class="text-slate-400 mt-4 leading-relaxed">企业原先仅用静态宣传页进行品牌展示，客户询盘和订单流转都依赖人工沟通。我们接手后，统一了品牌介绍、产品展示、订单结算和对账后台，形成线上-线下协同的经营协作机制。</p>
+            <ul class="mt-5 space-y-2 text-sm text-slate-300">
+              <li>• 订单处理时间从 3 天压缩到 2 小时内</li>
+              <li>• 线上咨询量增长接近 2 倍</li>
+              <li>• 销售和服务的数据可视化明显提升</li>
+            </ul>
+          </div>
+          <div class="glass-panel rounded-3xl p-6">
+            <div class="text-sm text-gr-cyan mb-3">客户故事：信息化+工程施工协同</div>
+            <h3 class="text-2xl font-bold text-white">把施工交付与数字车间连接起来</h3>
+            <p class="text-slate-400 mt-4 leading-relaxed">在园区建设项目中，除了硬件施工与布线，还需要对客户需求、工程进度、验收节点和售后问题进行系统化管理。我们用可视化流程和统一后台将这些环节串联起来，实现更稳定的项目交付和售后服务。</p>
+            <ul class="mt-5 space-y-2 text-sm text-slate-300">
+              <li>• 工程节点透明化，客户能实时查看进度</li>
+              <li>• 审批和结算流程逐步标准化</li>
+              <li>• 现场与后台协同效率得到显著提升</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="glass-panel rounded-[32px] p-8 md:p-10">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div>
+            <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">合作方式</p>
+            <h2 class="text-3xl font-bold text-white mt-3">让企业有更强的数字底盘和更稳的施工交付</h2>
+          </div>
+          <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan text-white font-medium">立即咨询</a>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+
+</html>

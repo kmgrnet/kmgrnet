@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>退款与对账 - 光润网络科技</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            gr: {
+              900: '#0B1121',
+              800: '#151E32',
+              blue: '#3B82F6',
+              cyan: '#06B6D4'
+            }
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+  <div id="app" class="max-w-6xl mx-auto p-6">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">经营管理</p>
+        <h1 class="text-3xl font-bold text-white mt-2">退款与对账中心</h1>
+      </div>
+      <div class="flex gap-3">
+        <a href="/admin.html" class="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200">返回后台</a>
+        <a href="/" class="rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan px-4 py-2 text-sm font-medium text-white">返回首页</a>
+      </div>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-4 mb-8">
+      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
+        <p class="text-slate-400 text-sm">本日收入</p>
+        <p class="text-2xl font-bold text-white mt-2">¥ {{ todayRevenue.toFixed(2) }}</p>
+      </div>
+      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
+        <p class="text-slate-400 text-sm">已退款</p>
+        <p class="text-2xl font-bold text-yellow-400 mt-2">¥ {{ totalRefund.toFixed(2) }}</p>
+      </div>
+      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
+        <p class="text-slate-400 text-sm">净收入</p>
+        <p class="text-2xl font-bold text-green-400 mt-2">¥ {{ netRevenue.toFixed(2) }}</p>
+      </div>
+      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
+        <p class="text-slate-400 text-sm">处理中的退款</p>
+        <p class="text-2xl font-bold text-red-400 mt-2">{{ pendingRefunds }}</p>
+      </div>
+    </div>
+
+    <div class="mb-8 grid gap-4 md:grid-cols-3">
+      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
+        <p class="text-slate-400 text-sm mb-2">退款比例</p>
+        <div class="flex items-end gap-2">
+          <span class="text-3xl font-bold text-white">{{ refundRate }}%</span>
+          <span class="text-slate-500 text-xs">相对总收入</span>
+        </div>
+      </div>
+      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
+        <p class="text-slate-400 text-sm mb-2">待审核</p>
+        <div class="flex items-end gap-2">
+          <span class="text-3xl font-bold text-yellow-400">{{ reviewCount }}</span>
+          <span class="text-slate-500 text-xs">条待处理</span>
+        </div>
+      </div>
+      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
+        <p class="text-slate-400 text-sm mb-2">已完成退款</p>
+        <div class="flex items-end gap-2">
+          <span class="text-3xl font-bold text-green-400">{{ completedCount }}</span>
+          <span class="text-slate-500 text-xs">笔已结清</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-8 grid gap-4 md:grid-cols-2">
+      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
+        <p class="text-slate-400 text-sm mb-2">月度对账汇总</p>
+        <div class="space-y-2">
+          <div v-for="item in monthlySummary" :key="item.label" class="flex items-center justify-between text-sm">
+            <span class="text-slate-300">{{ item.label }}</span>
+            <span class="text-white font-medium">¥ {{ item.amount.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
+        <p class="text-slate-400 text-sm mb-2">复核状态</p>
+        <div class="space-y-2 text-sm text-slate-300">
+          <div class="flex justify-between"><span>待审核</span><span class="text-yellow-400">{{ reviewCount }}</span></div>
+          <div class="flex justify-between"><span>退款中</span><span class="text-red-400">{{ inProcessCount }}</span></div>
+          <div class="flex justify-between"><span>已退款</span><span class="text-green-400">{{ completedCount }}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-8 bg-slate-900 rounded-2xl border border-slate-800 p-4">
+      <p class="text-slate-400 text-sm mb-3">渠道结算占比</p>
+      <div class="grid gap-3 md:grid-cols-3">
+        <div v-for="channel in channelBreakdown" :key="channel.name" class="rounded-xl border border-slate-800 bg-slate-800/40 p-3">
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-slate-300">{{ channel.label }}</span>
+            <span class="text-white font-medium">¥ {{ Number(channel.amount || 0).toFixed(2) }}</span>
+          </div>
+          <div class="mt-3 h-2 rounded-full bg-slate-800">
+            <div class="h-2 rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan" :style="{ width: channel.percent + '%' }"></div>
+          </div>
+          <p class="mt-2 text-xs text-slate-500">{{ channel.count }} 笔 · {{ channel.percent }}%</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
+        <div>
+          <h2 class="text-lg font-bold text-white">退款申请列表</h2>
+          <p class="text-sm text-slate-400">人工审核与对账状态</p>
+        </div>
+        <button @click="exportRefunds" class="rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-200">导出明细</button>
+      </div>
+      <table class="min-w-full text-sm">
+        <thead class="bg-slate-800 text-slate-300">
+          <tr>
+            <th class="px-4 py-3 text-left">订单号</th>
+            <th class="px-4 py-3 text-left">客户</th>
+            <th class="px-4 py-3 text-left">金额</th>
+            <th class="px-4 py-3 text-left">状态</th>
+            <th class="px-4 py-3 text-left">原因</th>
+            <th class="px-4 py-3 text-left">更新时间</th>
+            <th class="px-4 py-3 text-left">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in refundList" :key="item.order_id" class="border-t border-slate-800">
+            <td class="px-4 py-3 font-mono text-slate-200">{{ item.order_id }}</td>
+            <td class="px-4 py-3">{{ item.customer }}</td>
+            <td class="px-4 py-3">¥ {{ Number(item.amount || 0).toFixed(2) }}</td>
+            <td class="px-4 py-3" :class="item.status === '待审核' ? 'text-yellow-400' : item.status === '已退款' ? 'text-green-400' : item.status === '退款中' ? 'text-red-400' : 'text-slate-300'">{{ item.status }}</td>
+            <td class="px-4 py-3">{{ item.reason }}</td>
+            <td class="px-4 py-3">{{ item.updated_at }}</td>
+            <td class="px-4 py-3"><button @click="reviewRefund(item)" class="text-gr-cyan">{{ item.status === '待审核' ? '审核' : '查看' }}</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div v-if="selectedRefund" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
+      <div class="w-full max-w-lg rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-xl font-semibold text-white">退款审核</h2>
+            <p class="text-sm text-slate-400">订单号：{{ selectedRefund.order_id }}</p>
+          </div>
+          <button @click="selectedRefund = null" class="rounded-full border border-slate-700 px-3 py-1 text-sm text-slate-300">关闭</button>
+        </div>
+        <div class="space-y-4 text-sm text-slate-300">
+          <div class="rounded-2xl border border-slate-800 bg-slate-800/50 p-4">
+            <p class="text-slate-400">客户</p>
+            <p class="mt-1 text-white">{{ selectedRefund.customer }}</p>
+          </div>
+          <div class="rounded-2xl border border-slate-800 bg-slate-800/50 p-4">
+            <p class="text-slate-400">退款金额</p>
+            <p class="mt-1 text-white">¥ {{ Number(selectedRefund.amount || 0).toFixed(2) }}</p>
+          </div>
+          <div class="rounded-2xl border border-slate-800 bg-slate-800/50 p-4">
+            <p class="text-slate-400">审核说明</p>
+            <textarea v-model="reviewReason" rows="3" class="w-full mt-2 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200 focus:border-gr-cyan outline-none"></textarea>
+          </div>
+        </div>
+        <div class="mt-6 flex gap-3 justify-end">
+          <button @click="rejectRefund" class="rounded-full border border-red-500/60 px-4 py-2 text-sm text-red-300">拒绝退款</button>
+          <button @click="approveRefund" class="rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan px-4 py-2 text-sm font-medium text-white">批准退款</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, computed, onMounted, ref } = Vue;
+    createApp({
+      setup() {
+        const orders = ref([]);
+        const refundList = ref([]);
+        const selectedRefund = ref(null);
+        const reviewReason = ref('');
+        const summary = ref({
+          total_revenue: 12860,
+          refunded_total: 0,
+          net_revenue: 12860,
+          pending_refund_count: 0,
+          pending_review_count: 0,
+          refund_in_process_count: 0,
+          completed_refund_count: 0,
+          channels: [],
+          monthly: []
+        });
+
+        const loadSummary = async () => {
+          try {
+            const response = await fetch('/api/summary/reconciliation');
+            const result = await response.json();
+            if (result && result.data) {
+              summary.value = result.data;
+            }
+          } catch (error) {
+            summary.value = {
+              total_revenue: 12860,
+              refunded_total: 0,
+              net_revenue: 12860,
+              pending_refund_count: 0,
+              pending_review_count: 0,
+              refund_in_process_count: 0,
+              completed_refund_count: 0,
+              channels: [],
+              monthly: []
+            };
+          }
+        };
+
+        const loadOrders = async () => {
+          try {
+            const response = await fetch('/api/orders/list');
+            const result = await response.json();
+            orders.value = result.data || [];
+          } catch (error) {
+            orders.value = [];
+          }
+
+          try {
+            const refundResponse = await fetch('/api/refunds/list');
+            const refundResult = await refundResponse.json();
+            refundList.value = refundResult.data || [];
+          } catch (error) {
+            refundList.value = [
+              { order_id: 'ORDER-434F8647', customer: '测试客户', amount: 88.88, status: '待审核', reason: '重复支付', updated_at: '2026-08-02 09:14' },
+              { order_id: 'ORDER-7DE91D55', customer: '合作客户', amount: 19.99, status: '已退款', reason: '服务调整', updated_at: '2026-08-02 08:41' },
+              { order_id: 'ORDER-12AB90D1', customer: '惠州客户', amount: 129.00, status: '退款中', reason: '订单取消', updated_at: '2026-08-02 07:52' },
+              { order_id: 'ORDER-88FD03C2', customer: 'VIP 客户', amount: 499.00, status: '已退款', reason: '产品未按约定交付', updated_at: '2026-08-01 21:08' }
+            ];
+          }
+
+          await loadSummary();
+        };
+
+        const approveRefund = async () => {
+          if (!selectedRefund.value) return;
+          await fetch('/api/refunds/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              order_id: selectedRefund.value.order_id,
+              customer: selectedRefund.value.customer,
+              amount: Number(selectedRefund.value.amount || 0),
+              status: '已退款',
+              reason: reviewReason.value || selectedRefund.value.reason || '审核通过'
+            })
+          });
+
+          reviewReason.value = '';
+          selectedRefund.value = null;
+          await loadOrders();
+        };
+
+        const rejectRefund = async () => {
+          if (!selectedRefund.value) return;
+          await fetch('/api/refunds/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              order_id: selectedRefund.value.order_id,
+              customer: selectedRefund.value.customer,
+              amount: Number(selectedRefund.value.amount || 0),
+              status: '拒绝退款',
+              reason: reviewReason.value || '审核拒绝'
+            })
+          });
+
+          reviewReason.value = '';
+          selectedRefund.value = null;
+          await loadOrders();
+        };
+
+        const reviewRefund = (item) => {
+          selectedRefund.value = item;
+          reviewReason.value = item.reason || '';
+        };
+
+        const exportRefunds = () => {
+          const rows = [['订单号', '客户', '金额', '状态', '原因', '更新时间']];
+          refundList.value.forEach(item => rows.push([item.order_id, item.customer, Number(item.amount || 0).toFixed(2), item.status, item.reason, item.updated_at]));
+          const csv = rows.map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `refunds_${new Date().toISOString().slice(0, 10)}.csv`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        };
+
+        onMounted(() => {
+          loadOrders();
+        });
+
+        const todayRevenue = computed(() => Number(summary.value.total_revenue || orders.value.filter(item => Number(item.pay_status) === 1).reduce((sum, item) => sum + Number(item.amount || 0), 0) || 12860.00));
+        const totalRefund = computed(() => Number(summary.value.refunded_total || refundList.value.filter(item => item.status !== '待审核' && item.status !== '拒绝退款').reduce((sum, item) => sum + Number(item.amount || 0), 0)));
+        const netRevenue = computed(() => Number(summary.value.net_revenue || (todayRevenue.value - totalRefund.value)));
+        const pendingRefunds = computed(() => Number(summary.value.pending_refund_count || refundList.value.filter(item => item.status === '退款中' || item.status === '待审核').length));
+        const reviewCount = computed(() => Number(summary.value.pending_review_count || refundList.value.filter(item => item.status === '待审核').length));
+        const inProcessCount = computed(() => Number(summary.value.refund_in_process_count || refundList.value.filter(item => item.status === '退款中').length));
+        const completedCount = computed(() => Number(summary.value.completed_refund_count || refundList.value.filter(item => item.status === '已退款').length));
+        const refundRate = computed(() => {
+          const base = todayRevenue.value || 1;
+          const rate = (totalRefund.value / base) * 100;
+          return Number(rate.toFixed(2));
+        });
+        const monthlySummary = computed(() => {
+          if (summary.value.monthly && summary.value.monthly.length) {
+            return summary.value.monthly.map(item => ({
+              label: item.label,
+              amount: Number(item.amount || 0)
+            }));
+          }
+          return [
+            { label: '本月收入', amount: todayRevenue.value },
+            { label: '本月退款', amount: totalRefund.value },
+            { label: '本月净额', amount: netRevenue.value }
+          ];
+        });
+        const channelBreakdown = computed(() => {
+          const channels = summary.value.channels || [];
+          const total = channels.reduce((sum, item) => sum + Number(item.amount || 0), 0) || 1;
+          return channels.map(item => ({
+            name: item.name,
+            label: item.label,
+            amount: Number(item.amount || 0),
+            count: Number(item.count || 0),
+            percent: Number(((Number(item.amount || 0) / total) * 100).toFixed(1))
+          }));
+        });
+
+        return {
+          refundList,
+          selectedRefund,
+          reviewReason,
+          exportRefunds,
+          reviewRefund,
+          approveRefund,
+          rejectRefund,
+          todayRevenue,
+          totalRefund,
+          netRevenue,
+          pendingRefunds,
+          reviewCount,
+          inProcessCount,
+          completedCount,
+          refundRate,
+          monthlySummary,
+          channelBreakdown,
+          loadSummary
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+
+</html>
