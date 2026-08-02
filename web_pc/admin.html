@@ -251,6 +251,9 @@
   </div>
 
   <script>
+    const API_BASE = window.__API_BASE__ || '';
+    const apiUrl = (path) => `${API_BASE}${path}`;
+
     const { createApp, ref, onMounted, onUnmounted, computed } = Vue;
     createApp({
       setup() {
@@ -269,7 +272,7 @@
 
         const loadOrders = async () => {
           try {
-            const response = await fetch('/api/orders/list');
+            const response = await fetch(apiUrl('/api/orders/list'));
             const result = await response.json();
             orders.value = result.data || [];
             lastUpdated.value = new Date().toLocaleString('zh-CN');
@@ -284,7 +287,7 @@
           selectedOrder.value = null;
 
           try {
-            const response = await fetch(`/api/order/detail?order_id=${encodeURIComponent(order.order_id)}`);
+            const response = await fetch(apiUrl(`/api/order/detail?order_id=${encodeURIComponent(order.order_id)}`));
             const result = await response.json();
             selectedOrder.value = result.data || null;
           } catch (error) {
@@ -305,7 +308,7 @@
           }
 
           try {
-            const response = await fetch('/api/refunds/update', {
+            const response = await fetch(apiUrl('/api/refunds/update'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({

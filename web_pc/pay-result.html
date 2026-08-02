@@ -118,7 +118,7 @@
             return;
           }
           try {
-            const response = await fetch(`/api/order/detail?order_id=${encodeURIComponent(orderId)}`);
+            const response = await fetch(apiUrl(`/api/order/detail?order_id=${encodeURIComponent(orderId)}`));
             const result = await response.json();
             order.value = result.data || null;
             isPaid.value = Boolean(result?.data?.is_paid);

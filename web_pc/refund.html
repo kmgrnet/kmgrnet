@@ -184,6 +184,9 @@
   </div>
 
   <script>
+    const API_BASE = window.__API_BASE__ || '';
+    const apiUrl = (path) => `${API_BASE}${path}`;
+
     const { createApp, computed, onMounted, ref } = Vue;
     createApp({
       setup() {
@@ -205,7 +208,7 @@
 
         const loadSummary = async () => {
           try {
-            const response = await fetch('/api/summary/reconciliation');
+            const response = await fetch(apiUrl('/api/summary/reconciliation'));
             const result = await response.json();
             if (result && result.data) {
               summary.value = result.data;
@@ -227,7 +230,7 @@
 
         const loadOrders = async () => {
           try {
-            const response = await fetch('/api/orders/list');
+            const response = await fetch(apiUrl('/api/orders/list'));
             const result = await response.json();
             orders.value = result.data || [];
           } catch (error) {
@@ -235,7 +238,7 @@
           }
 
           try {
-            const refundResponse = await fetch('/api/refunds/list');
+            const refundResponse = await fetch(apiUrl('/api/refunds/list'));
             const refundResult = await refundResponse.json();
             refundList.value = refundResult.data || [];
           } catch (error) {
@@ -252,7 +255,7 @@
 
         const approveRefund = async () => {
           if (!selectedRefund.value) return;
-          await fetch('/api/refunds/update', {
+          await fetch(apiUrl('/api/refunds/update'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -271,7 +274,7 @@
 
         const rejectRefund = async () => {
           if (!selectedRefund.value) return;
-          await fetch('/api/refunds/update', {
+          await fetch(apiUrl('/api/refunds/update'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

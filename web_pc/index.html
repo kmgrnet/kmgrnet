@@ -476,6 +476,9 @@
   </div>
 
   <script>
+    const API_BASE = window.__API_BASE__ || '';
+    const apiUrl = (path) => `${API_BASE}${path}`;
+
     const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
     createApp({
       setup() {
@@ -485,7 +488,7 @@
         const handleScroll = () => { scrolled.value = window.scrollY > 20; };
         const loadRecentOrders = async () => {
           try {
-            const response = await fetch('/api/orders/list');
+            const response = await fetch(apiUrl('/api/orders/list'));
             const result = await response.json();
             recentOrders.value = (result.data || []).slice(0, 4);
           } catch (error) {
@@ -554,7 +557,7 @@
         const processPayment = async () => {
           checkout.value.status = 'processing';
           try {
-            const response = await fetch('/api/order/create', {
+            const response = await fetch(apiUrl('/api/order/create'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -568,14 +571,14 @@
             checkout.value.orderResult = result;
 
             if (orderId) {
-              await fetch(`/api/payment/notify/${checkout.value.payMethod}`, {
+              await fetch(apiUrl(`/api/payment/notify/${checkout.value.payMethod}`), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ order_id: orderId })
               });
 
               const pollStatus = () => {
-                fetch(`/api/order/status?order_id=${encodeURIComponent(orderId)}`)
+                fetch(apiUrl(`/api/order/status?order_id=${encodeURIComponent(orderId)}`))
                   .then(res => res.json())
                   .then(statusResult => {
                     if (statusResult?.data?.is_paid) {
