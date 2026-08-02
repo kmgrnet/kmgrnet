@@ -169,18 +169,82 @@ curl -k -H 'Host: api.kmgrnet.com' https://127.0.0.1/api/orders/list
 
 验证成功后，再切回 `Proxied`。
 
-### 7. Cloudflare Pages 配置
+### 7. Cloudflare Pages 前端部署
 
-在 Pages 项目环境变量中设置：
+#### 7.1 代码提交到 GitHub
+
+```bash
+cd /root/kmgrnet
+git config user.name "kmgrnet"
+git config user.email "kmgrnet@local"
+git add .
+git commit -m "fix: add cors support and cloudflare api base"
+git branch -M main
+git remote set-url origin https://github.com/kmgrnet/kmgrnet.git
+git push -u origin main
+```
+
+如果 GitHub 弹出用户名/密码输入：
+
+- Username: 你的 GitHub 用户名
+- Password: 你的 GitHub Personal Access Token（PAT）
+
+#### 7.2 在 Cloudflare Pages 中创建/绑定项目
+
+1. 登录 Cloudflare Dashboard
+2. 进入 Workers & Pages
+3. 点击 Create application
+4. 选择 Pages
+5. 连接 GitHub 仓库：`kmgrnet/kmgrnet`
+6. 选择分支：`main`
+7. 设置构建命令：
+
+```bash
+# 若使用静态文件部署，通常无需额外构建命令
+```
+
+8. 设置输出目录：
+
+```text
+web_pc
+```
+
+如果项目是直接托管 `web_pc` 目录，则输出目录应设为 `web_pc`。
+
+#### 7.3 配置环境变量
+
+在 Pages 项目设置中新增环境变量：
 
 ```text
 API_BASE=https://api.kmgrnet.com
 ```
 
-然后重新部署前端：
+可以同时保留：
 
-- 触发 Deploy
-- 检查首页、下单、支付、后台等跳转是否能连通后端
+```text
+NODE_ENV=production
+```
+
+#### 7.4 部署并验证
+
+部署完成后：
+
+1. 打开 Pages 站点首页
+2. 确认前端 JS 可以加载
+3. 点击下单/支付
+4. 检查浏览器 Network，确保请求地址为：
+
+```text
+https://api.kmgrnet.com/api/order/create
+```
+
+5. 确认返回 JSON，而不是 405 / 521 / HTML
+
+#### 7.5 常见问题排查
+
+- 如果仍报 `405`：检查是否仍在请求旧页面代码，重新部署并清缓存
+- 如果报 `521`：说明 Cloudflare 仍连不到 VPS origin，确保 `api.kmgrnet.com` 解析到 VPS，且颁发 443/80 端口
+- 如果报 `Failed to execute 'json'`：检查是否返回了 HTML 或重定向，确保 `API_BASE` 正确
 
 ### 8. 常见问题
 
