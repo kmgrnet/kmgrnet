@@ -16,6 +16,7 @@
 - 将 localhost:8443 替换为正式域名。
 
 ## 4. 下一步可做的功能
-- 订单落库。
-- 支付回调状态更新。
-- 前端轮询订单状态并展示支付成功页面。
+- [x] 订单落库（已迁移至 MySQL，见 [order-persistence.md](./order-persistence.md)）。
+- [x] 支付回调状态更新（`/api/payment/notify/{channel}` 已写入 `orders` 表）。
+- [x] 前端轮询订单状态并展示支付成功页面（见 [order-result-flow.md](./order-result-flow.md)）。
+- [ ] 接入真实支付渠道签名校验（见第 2 节）。
