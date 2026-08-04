@@ -33,6 +33,23 @@
 3. 生成证书文件并放置到 nginx/ssl/。
 4. 运行：
 
+apt-get update
+apt-get install -y docker.io
+systemctl enable --now docker
+systemctl status docker --no-pager
+docker info
+
+ps -p 1 -o comm=
+command -v systemctl || command -v service || command -v rc-service
+
+apt-get update
+apt-get install -y docker.io
+service docker start
+docker info
+
+cd ~/kmgrnet
+git clone https://github.com/kmgrnet/kmgrnet.git .
+
 ```bash
 docker compose up -d
 ```
@@ -63,13 +80,28 @@ cp .env.example .env
 nano .env
 ```
 
+cd ~/kmgrnet
+docker compose up -d --build
+
 常见配置：
 
 ```env
 MYSQL_ROOT_PASSWORD=GuangRun_DB_Pass_2026
 MYSQL_DATABASE=likeshop_db
 REDIS_PASSWORD=GuangRun_Redis_Pass_2026
+
+# 微信支付 v3 回调验签所需，见下方「微信支付回调配置」
+WECHAT_API_V3_KEY=
+WECHAT_PLATFORM_PUBLIC_KEY_PATH=/etc/wechat/certs/wechatpay_platform.pem
 ```
+
+#### 微信支付回调配置
+
+`likeshop/public/index.php` 中 `/api/payment/notify/wechat` 回调会校验微信支付平台签名并用 APIv3 密钥解密，上线前必须配置：
+
+1. `WECHAT_API_V3_KEY`：商户平台 -> 账户设置 -> API安全 中设置的 32 位 APIv3 密钥，必填，缺失时回调会直接报错拒绝。
+2. 微信支付平台证书公钥：从 `GET https://api.mch.weixin.qq.com/v3/certificates` 下载并定期轮换，保存为 `wechat/certs/wechatpay_platform.pem`（该目录已加入 `.gitignore`，不会被提交）。`WECHAT_PLATFORM_PUBLIC_KEY_PATH` 是容器内路径，对应 `docker-compose.yml` 中 `./wechat/certs:/etc/wechat/certs:ro` 的挂载。
+   - 若证书暂未配置，验签会被跳过并记录警告日志，仅依赖 APIv3 密钥解密作为最低限度防护，**必须尽快补齐**。
 
 ### 2. 确认 Docker 已安装并可用
 
@@ -122,6 +154,73 @@ services:
 ```
 
 ### 4. 启动项目
+docker-compose.yml
+'''
+services:
+  nginx:
+    image: nginx:1.24-alpine
+    container_name: kmgrnet-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./web_pc:/usr/share/nginx/html/pc:ro
+      - ./web_h5:/usr/share/nginx/html/h5:ro
+      - ./likeshop:/var/www/html/likeshop
+    depends_on:
+      - php
+      - mysql
+      - redis
+    networks:
+      - kmgrnet-network
+
+  php:
+    build:
+      context: .
+      dockerfile: docker/php.Dockerfile
+    container_name: kmgrnet-php
+    restart: always
+    working_dir: /var/www/html/likeshop
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-GuangRun_DB_Pass_2026}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-likeshop_db}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: root
+    volumes:
+      - ./likeshop:/var/www/html/likeshop
+    networks:
+      - kmgrnet-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: kmgrnet-mysql
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-GuangRun_DB_Pass_2026}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-likeshop_db}
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    networks:
+      - kmgrnet-network
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: kmgrnet-redis
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-GuangRun_Redis_Pass_2026}
+    volumes:
+      - ./redis/data:/data
+    networks:
+      - kmgrnet-network
+
+networks:
+  kmgrnet-network:
+    driver: bridge
 
 ```bash
 cd /root/kmgrnet

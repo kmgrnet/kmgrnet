@@ -21,6 +21,113 @@ function jsonResponse($code, $message, $data = [], $status = 200): void {
     exit;
 }
 
+/**
+ * 微信支付 v3 回调验签结果
+ */
+class WechatNotifyException extends \RuntimeException {}
+
+/**
+ * 校验微信支付 v3 回调的平台签名。
+ *
+ * 验签所需的微信支付平台证书公钥需从商户平台 API
+ * （GET https://api.mch.weixin.qq.com/v3/certificates）下载并定期轮换，
+ * 本地无法自动获取，需运维手动下载后配置 WECHAT_PLATFORM_PUBLIC_KEY_PATH。
+ * 在证书就绪前，本函数会跳过平台签名校验并记录警告，仅依赖 APIv3 密钥解密
+ * 作为最低限度的防护（无密钥则无法解密出合法数据）。
+ */
+function verifyWechatPlatformSignature(string $timestamp, string $nonce, string $body, string $signature): bool {
+    $publicKeyPath = getenv('WECHAT_PLATFORM_PUBLIC_KEY_PATH') ?: '';
+    if ($publicKeyPath === '' || !is_readable($publicKeyPath)) {
+        error_log('[wechat-notify] WECHAT_PLATFORM_PUBLIC_KEY_PATH 未配置或不可读，跳过平台签名校验（TODO：补齐后必须启用）');
+        return true;
+    }
+
+    $publicKey = file_get_contents($publicKeyPath);
+    $message = "{$timestamp}\n{$nonce}\n{$body}\n";
+    $ok = openssl_verify($message, base64_decode($signature), $publicKey, OPENSSL_ALGO_SHA256);
+    return $ok === 1;
+}
+
+/**
+ * 使用 APIv3 密钥对微信支付回调中的 resource 字段做 AES-256-GCM 解密。
+ */
+function decryptWechatResource(array $resource): array {
+    $apiV3Key = getenv('WECHAT_API_V3_KEY') ?: '';
+    if ($apiV3Key === '') {
+        throw new WechatNotifyException('缺少 WECHAT_API_V3_KEY 环境变量，无法解密回调');
+    }
+
+    $ciphertext = base64_decode($resource['ciphertext'] ?? '');
+    $nonce = $resource['nonce'] ?? '';
+    $associatedData = $resource['associated_data'] ?? '';
+
+    if ($ciphertext === false || $ciphertext === '' || $nonce === '') {
+        throw new WechatNotifyException('回调 resource 字段不完整');
+    }
+
+    $authTagLength = 16;
+    $authTag = substr($ciphertext, -$authTagLength);
+    $cipherOnly = substr($ciphertext, 0, -$authTagLength);
+
+    $plaintext = openssl_decrypt(
+        $cipherOnly,
+        'aes-256-gcm',
+        $apiV3Key,
+        OPENSSL_RAW_DATA,
+        $nonce,
+        $authTag,
+        $associatedData
+    );
+
+    if ($plaintext === false) {
+        throw new WechatNotifyException('回调 resource 解密失败，APIv3 密钥可能不正确');
+    }
+
+    $data = json_decode($plaintext, true);
+    if (!is_array($data)) {
+        throw new WechatNotifyException('回调 resource 解密结果不是合法 JSON');
+    }
+    return $data;
+}
+
+/**
+ * 校验并解析微信支付 v3 回调，返回商户订单号与交易状态。
+ * 校验失败抛出 WechatNotifyException，调用方需返回非 200 响应体（微信会重试）。
+ */
+function handleWechatNotify(): array {
+    $timestamp = $_SERVER['HTTP_WECHATPAY_TIMESTAMP'] ?? '';
+    $nonce = $_SERVER['HTTP_WECHATPAY_NONCE'] ?? '';
+    $signature = $_SERVER['HTTP_WECHATPAY_SIGNATURE'] ?? '';
+    $body = file_get_contents('php://input');
+
+    if ($timestamp === '' || $nonce === '' || $signature === '') {
+        throw new WechatNotifyException('缺少微信支付签名请求头');
+    }
+
+    if (!verifyWechatPlatformSignature($timestamp, $nonce, $body, $signature)) {
+        throw new WechatNotifyException('微信支付平台签名校验失败，回调可能被伪造');
+    }
+
+    $payload = json_decode($body, true);
+    if (!is_array($payload) || !isset($payload['resource'])) {
+        throw new WechatNotifyException('回调报文格式不正确');
+    }
+
+    $data = decryptWechatResource($payload['resource']);
+
+    $tradeState = $data['trade_state'] ?? '';
+    $outTradeNo = $data['out_trade_no'] ?? '';
+    if ($outTradeNo === '') {
+        throw new WechatNotifyException('解密后缺少 out_trade_no');
+    }
+
+    return [
+        'order_id' => $outTradeNo,
+        'is_paid' => $tradeState === 'SUCCESS',
+        'transaction_id' => $data['transaction_id'] ?? '',
+    ];
+}
+
 function getDbConnection(): PDO {
     static $pdo = null;
     if ($pdo !== null) {
@@ -388,6 +495,18 @@ try {
         initDbSchema($pdo);
 
         $channel = $m[1];
+
+        if ($channel === 'wechat') {
+            $notify = handleWechatNotify();
+            $orderId = $notify['order_id'];
+            if ($notify['is_paid']) {
+                $stmt = $pdo->prepare('UPDATE orders SET pay_status = 1, updated_at = ?, paid_at = ?, channel = ? WHERE order_id = ?');
+                $now = date('Y-m-d H:i:s');
+                $stmt->execute([$now, $now, $channel, $orderId]);
+            }
+            jsonResponse(0, 'SUCCESS', ['channel' => $channel, 'received' => true, 'order_id' => $orderId]);
+        }
+
         $payload = json_decode(file_get_contents('php://input'), true) ?? [];
         $orderId = $payload['order_id'] ?? '';
         if ($orderId !== '') {
@@ -403,6 +522,9 @@ try {
     }
 
     jsonResponse(404, '接口不存在', [], 404);
+} catch (WechatNotifyException $e) {
+    error_log('[wechat-notify] ' . $e->getMessage());
+    jsonResponse(1, '回调验签失败', [], 400);
 } catch (Throwable $e) {
     jsonResponse(500, '数据库错误: ' . $e->getMessage(), [], 500);
 }

@@ -20,6 +20,10 @@ __pycache__/
 mysql/data/
 redis/data/
 
+# Wechat Pay platform certificates (secrets, must not be committed)
+wechat/certs/*
+!wechat/certs/.gitkeep
+
 # Logs
 *.log
 
