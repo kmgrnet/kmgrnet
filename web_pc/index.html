@@ -90,6 +90,9 @@
               <i class="fa-solid fa-magnifying-glass text-xs"></i>
               <span>搜索资讯与服务</span>
             </label>
+            <button @click="openChannelDrawer"
+              class="hidden sm:inline-flex items-center gap-1.5 border border-gr-line hover:border-gr-blue text-gr-ink px-4 py-2 rounded-full text-sm font-medium transition-colors">
+              <i class="fa-solid fa-cart-shopping text-xs"></i> 多端购物</button>
             <a href="/admin.html"
               class="bg-gr-blue hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">订单后台</a>
           </div>
@@ -342,8 +345,9 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[400px]">
           <div v-for="product in currentProducts" :key="product.id"
-            class="card rounded-xl p-6 transition-all duration-200 flex flex-col">
-            <div class="flex justify-between items-start mb-5">
+            class="card rounded-xl p-6 transition-all duration-200 flex flex-col"
+            :class="product.stock === 'out_of_stock' ? 'opacity-70' : ''">
+            <div class="flex justify-between items-start mb-3">
               <div
                 class="w-12 h-12 rounded-xl bg-gr-wash flex items-center justify-center border border-gr-line text-xl"
                 :class="product.color">
@@ -358,6 +362,13 @@
                 <span class="font-bold text-gr-blue text-lg">按需定制</span>
               </div>
             </div>
+            <div v-if="product.stock" class="mb-2.5">
+              <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded"
+                :class="stockMeta(product.stock).badge">
+                <span class="w-1.5 h-1.5 rounded-full" :class="stockMeta(product.stock).dot"></span>
+                {{ stockMeta(product.stock).label }}
+              </span>
+            </div>
             <h3 class="text-lg font-bold text-gr-ink mb-2.5">{{ product.title }}</h3>
             <p class="text-gr-sub text-sm leading-relaxed flex-grow">{{ product.desc }}</p>
             <div class="flex flex-wrap gap-2 mt-5 mb-5">
@@ -366,6 +377,13 @@
             </div>
             <button v-if="product.buyable" @click="openCheckout(product)"
               class="w-full py-2.5 rounded-lg bg-gr-ink hover:bg-gr-blue text-white font-medium transition-colors text-sm">立即下单
+              <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i></button>
+            <button v-else-if="product.stock === 'out_of_stock'" @click="scrollToContact"
+              class="w-full py-2.5 rounded-lg bg-gr-wash text-slate-400 font-medium text-sm border border-gr-line cursor-pointer hover:text-gr-ink hover:border-slate-400 transition-colors">到货通知我</button>
+            <button v-else-if="product.stock === 'preorder'" @click="scrollToContact"
+              class="w-full py-2.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-medium transition-colors border border-amber-200 text-sm">预售咨询</button>
+            <button v-else-if="product.id === 'ret1'" @click="openChannelDrawer"
+              class="w-full py-2.5 rounded-lg bg-gr-ink hover:bg-gr-blue text-white font-medium transition-colors text-sm">前往商城选购
               <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i></button>
             <button v-else
               class="w-full py-2.5 rounded-lg bg-gr-wash hover:bg-slate-100 text-gr-ink font-medium transition-colors border border-gr-line text-sm">预约方案评估</button>
@@ -444,6 +462,83 @@
         </div>
       </div>
     </footer>
+
+    <div class="fixed right-0 top-1/2 -translate-y-1/2 z-40 hidden md:block">
+      <div class="bg-white border border-gr-line border-r-0 rounded-l-xl shadow-lg overflow-hidden">
+        <button @click="openChannelDrawer" title="多端购物入口"
+          class="flex flex-col items-center gap-1.5 px-3 py-4 w-16 text-slate-500 hover:text-gr-blue hover:bg-gr-wash transition-colors border-b border-gr-line">
+          <i class="fa-solid fa-cart-shopping text-lg"></i>
+          <span class="text-[11px] leading-tight text-center">多端<br/>购物</span>
+        </button>
+        <a href="#contact" title="联系合作"
+          class="flex flex-col items-center gap-1.5 px-3 py-4 w-16 text-slate-500 hover:text-gr-blue hover:bg-gr-wash transition-colors">
+          <i class="fa-solid fa-phone text-lg"></i>
+          <span class="text-[11px] leading-tight text-center">联系<br/>我们</span>
+        </a>
+      </div>
+    </div>
+
+    <transition name="fade">
+      <div v-if="channelDrawer.show" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="closeChannelDrawer"></div>
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl relative z-10 overflow-hidden border border-gr-line">
+          <div class="px-8 pt-8 pb-6 border-b border-gr-line relative">
+            <button @click="closeChannelDrawer"
+              class="absolute top-6 right-6 w-8 h-8 rounded-full bg-gr-wash flex items-center justify-center text-slate-400 hover:text-gr-ink hover:bg-slate-100 transition-colors">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="text-slate-400 text-sm font-medium mb-2">多端购物入口</p>
+            <h3 class="text-xl font-bold text-gr-ink leading-tight pr-8">选择您习惯的方式购买与支付</h3>
+          </div>
+          <div class="p-8 space-y-3">
+            <button @click="goToStandaloneShop"
+              class="w-full flex items-center justify-between p-4 rounded-xl border border-gr-line hover:border-gr-blue hover:bg-gr-wash transition-colors text-left">
+              <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-full bg-blue-50 flex items-center justify-center text-gr-blue text-lg">
+                  <i class="fa-solid fa-globe"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-gr-ink">独立站商城下单</p>
+                  <p class="text-xs text-gr-sub mt-0.5">当前网站内直接下单支付，实时可用</p>
+                </div>
+              </div>
+              <span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded shrink-0">可用</span>
+            </button>
+            <button @click="channelDrawer.tab = 'miniapp'"
+              class="w-full flex items-center justify-between p-4 rounded-xl border border-gr-line hover:border-gr-blue hover:bg-gr-wash transition-colors text-left">
+              <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 text-lg">
+                  <i class="fa-brands fa-weixin"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-gr-ink">微信小程序</p>
+                  <p class="text-xs text-gr-sub mt-0.5">扫码打开小程序下单</p>
+                </div>
+              </div>
+              <span class="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded shrink-0">即将上线</span>
+            </button>
+            <div v-if="channelDrawer.tab === 'miniapp'" class="rounded-xl border border-gr-line bg-gr-wash p-5 text-center">
+              <div class="w-32 h-32 mx-auto rounded-lg bg-white border border-gr-line flex items-center justify-center text-slate-300">
+                <i class="fa-solid fa-qrcode text-5xl"></i>
+              </div>
+              <p class="text-sm text-gr-sub mt-3">小程序开发中，敬请期待上线后扫码体验</p>
+            </div>
+            <div class="w-full flex items-center justify-between p-4 rounded-xl border border-gr-line bg-gr-wash text-left opacity-80">
+              <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-lg">
+                  <i class="fa-solid fa-right-to-bracket"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-gr-ink">SSO 单点登录商城</p>
+                  <p class="text-xs text-gr-sub mt-0.5">统一账号登录独立商城系统</p>
+                </div>
+              </div>
+              <span class="text-xs font-medium text-slate-500 bg-slate-200 px-2 py-1 rounded shrink-0">建设中</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
 
     <transition name="fade">
       <div v-if="checkout.show" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -589,16 +684,41 @@
           { id: 's2', category: 'software', title: 'DevOps 与云原生架构托管', desc: 'Docker 容器化部署、Linux 环境搭建及服务器全生命周期维护。', icon: 'fa-server', color: 'text-gr-blue', tags: ['Docker', 'Nginx', '高可用'], price: null, buyable: false },
           { id: 's3', category: 'software', title: 'AI 私有化及企业内部系统', desc: '构建本地 vLLM 大模型知识库，及企业定制化 EHS 质检审批流系统。', icon: 'fa-brain', color: 'text-purple-500', tags: ['信息化流转', '安全质检'], price: null, buyable: false },
           { id: 'sec1', category: 'security', title: '安防监控与智能门禁布线', desc: '针对厂区、办公楼提供高清视频监控、门禁考勤与防盗报警系统规划与施工。', icon: 'fa-video', color: 'text-emerald-500', tags: ['现场勘测', '综合布线'], price: 500, priceLabel: '定金/勘测费', buyable: true },
-          { id: 'sec2', category: 'security', title: '标准化安防硬件采购', desc: '品牌网络摄像机、硬盘录像机、交换机及周边耗材直供。', icon: 'fa-box', color: 'text-orange-500', tags: ['现货发售', '硬件质保'], price: null, buyable: false },
+          { id: 'sec2', category: 'security', title: '标准化安防硬件采购', desc: '品牌网络摄像机、硬盘录像机、交换机及周边耗材直供。', icon: 'fa-box', color: 'text-orange-500', tags: ['现货发售', '硬件质保'], price: null, buyable: false, stock: 'out_of_stock' },
           { id: 'net1', category: 'network', title: '企业级专网与 VPN 方案', desc: '构建跨区域安全网络互联，实现异地办公数据加密传输及内网穿透。', icon: 'fa-network-wired', color: 'text-indigo-500', tags: ['数据加密', '稳定高速'], price: null, buyable: false },
           { id: 'net2', category: 'network', title: 'Office 365 商业版订阅', desc: '提供正版 Office 365 账号授权，涵盖 Word、Excel 及云端协作工具。', icon: 'fa-microsoft', color: 'text-blue-600', tags: ['虚拟发货', '自动激活'], price: 399, buyable: true },
           { id: 'net3', category: 'network', title: '边缘计算与防护 (EdgeOne/CF)', desc: '配置 Cloudflare 或腾讯云 EdgeOne，提供 CDN 加速与 WAF 安全防护。', icon: 'fa-bolt', color: 'text-amber-500', tags: ['防御清洗', '网站加速'], price: null, buyable: false },
-          { id: 'chem1', category: 'chemical', title: '红磷阻燃剂及衍生产品', desc: '批零兼营工业级红磷阻燃材料，支持大宗采购，出具完整质检报告。', icon: 'fa-fire-extinguisher', color: 'text-red-500', tags: ['大宗物料', '阶梯定价', '出厂质检'], price: null, buyable: false },
+          { id: 'chem1', category: 'chemical', title: '红磷阻燃剂及衍生产品', desc: '批零兼营工业级红磷阻燃材料，支持大宗采购，出具完整质检报告。', icon: 'fa-fire-extinguisher', color: 'text-red-500', tags: ['大宗物料', '阶梯定价', '出厂质检'], price: null, buyable: false, stock: 'preorder' },
           { id: 'chem2', category: 'chemical', title: '工业安全与排风工程咨询', desc: '针对化工生产提供防腐排风管网设计、粉尘控制及 EHS 环保达标方案。', icon: 'fa-wind', color: 'text-teal-500', tags: ['环保工程', '安全合规'], price: null, buyable: false },
-          { id: 'ret1', category: 'retail', title: '光润严选 - 员工福利与鞋服', desc: '品牌鞋服、日用百货代销，支持企业集中采购及员工福利代发。', icon: 'fa-shirt', color: 'text-pink-500', tags: ['生活百货', '快递包邮'], price: null, buyable: false, priceLabel: '前往商城选购' }
+          { id: 'ret1', category: 'retail', title: '光润严选 - 员工福利与鞋服', desc: '品牌鞋服、日用百货代销，支持企业集中采购及员工福利代发。', icon: 'fa-shirt', color: 'text-pink-500', tags: ['生活百货', '快递包邮'], price: null, buyable: false, priceLabel: '前往商城选购', stock: 'in_stock' }
         ];
         const currentProducts = computed(() => products.filter(p => p.category === activeTab.value));
+        const stockMeta = (stock) => {
+          const map = {
+            in_stock: { label: '现货', dot: 'bg-emerald-500', badge: 'bg-emerald-50 text-emerald-700' },
+            preorder: { label: '预售', dot: 'bg-amber-500', badge: 'bg-amber-50 text-amber-700' },
+            out_of_stock: { label: '缺货', dot: 'bg-slate-400', badge: 'bg-slate-100 text-slate-500' }
+          };
+          return map[stock] || null;
+        };
         const checkout = ref({ show: false, status: 'select', payMethod: 'wechat', product: {}, orderResult: null });
+
+        const channelDrawer = ref({ show: false, tab: '' });
+        const openChannelDrawer = () => {
+          channelDrawer.value = { show: true, tab: '' };
+          document.body.style.overflow = 'hidden';
+        };
+        const closeChannelDrawer = () => {
+          channelDrawer.value.show = false;
+          document.body.style.overflow = 'auto';
+        };
+        const goToStandaloneShop = () => {
+          closeChannelDrawer();
+          document.getElementById('matrix')?.scrollIntoView({ behavior: 'smooth' });
+        };
+        const scrollToContact = () => {
+          document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+        };
         let pollTimer = null;
 
         const stopPolling = () => {
@@ -672,7 +792,7 @@
           }
         };
 
-        return { recentOrders, newsCategories, activeNewsCategory, currentNews, categories, activeTab, currentProducts, checkout, openCheckout, closeCheckout, processPayment, amapUrl, baiduMapUrl };
+        return { recentOrders, newsCategories, activeNewsCategory, currentNews, categories, activeTab, currentProducts, stockMeta, checkout, openCheckout, closeCheckout, processPayment, amapUrl, baiduMapUrl, channelDrawer, openChannelDrawer, closeChannelDrawer, goToStandaloneShop, scrollToContact };
       }
     }).mount('#app');
   </script>
