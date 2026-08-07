@@ -9,48 +9,55 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
             gr: {
-              900: '#0B1121',
-              800: '#151E32',
               blue: '#3B82F6',
-              cyan: '#06B6D4'
+              cyan: '#06B6D4',
+              ink: '#0F172A',
+              sub: '#64748B',
+              line: '#E5E9F0',
+              wash: '#F7F8FA'
             }
           }
         }
       }
     };
   </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+  </style>
 </head>
 
-<body class="bg-slate-950 text-slate-200 min-h-screen">
+<body class="bg-gr-wash text-slate-700 min-h-screen">
   <div id="app" class="max-w-5xl mx-auto p-6">
-    <div class="bg-slate-900 rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden">
-      <div class="border-b border-slate-800 px-8 py-6">
-        <div :class="isPaid ? 'bg-green-500/20' : 'bg-yellow-500/20'"
+    <div class="bg-white rounded-2xl border border-gr-line shadow-sm overflow-hidden">
+      <div class="border-b border-gr-line px-8 py-6">
+        <div :class="isPaid ? 'bg-emerald-50' : 'bg-amber-50'"
           class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-          <i :class="isPaid ? 'fa-solid fa-check text-green-400' : 'fa-solid fa-circle-notch fa-spin text-yellow-400'"
+          <i :class="isPaid ? 'fa-solid fa-check text-emerald-500' : 'fa-solid fa-circle-notch fa-spin text-amber-500'"
             class="text-3xl"></i>
         </div>
-        <h1 class="text-2xl font-bold text-white text-center">{{ isPaid ? '支付成功' : '支付结果同步中' }}</h1>
-        <p class="text-slate-400 mt-2 text-center">{{ statusMessage }}</p>
+        <h1 class="text-2xl font-bold text-gr-ink text-center">{{ isPaid ? '支付成功' : '支付结果同步中' }}</h1>
+        <p class="text-gr-sub mt-2 text-center">{{ statusMessage }}</p>
       </div>
 
       <div class="p-8">
-        <div v-if="loading" class="rounded-2xl border border-slate-800 bg-slate-800/60 p-6 text-slate-400 text-center">
+        <div v-if="loading" class="rounded-xl border border-gr-line bg-gr-wash p-6 text-gr-sub text-center">
           正在查询支付状态，请稍候...
         </div>
         <div v-else-if="order" class="space-y-6">
-          <div class="rounded-3xl border border-slate-800 bg-slate-800/60 p-6">
+          <div class="rounded-2xl border border-gr-line bg-gr-wash p-6">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
               <div>
-                <p class="text-sm text-slate-400">收款凭证</p>
-                <p class="font-mono text-white text-lg mt-1">{{ order.order_id }}</p>
+                <p class="text-sm text-gr-sub">收款凭证</p>
+                <p class="font-mono text-gr-ink text-lg mt-1">{{ order.order_id }}</p>
               </div>
-              <div :class="isPaid ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'"
+              <div :class="isPaid ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
                 class="rounded-full px-4 py-2 text-sm font-medium inline-flex">
                 {{ order.status_text }}
               </div>
@@ -58,35 +65,35 @@
           </div>
 
           <div class="grid gap-4 md:grid-cols-2">
-            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-              <p class="text-sm text-slate-400">服务名称</p>
-              <p class="text-white mt-1">{{ order.title }}</p>
+            <div class="rounded-xl border border-gr-line bg-white p-4">
+              <p class="text-sm text-gr-sub">服务名称</p>
+              <p class="text-gr-ink mt-1">{{ order.title }}</p>
             </div>
-            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-              <p class="text-sm text-slate-400">支付金额</p>
-              <p class="text-white mt-1">¥{{ order.amount }}</p>
+            <div class="rounded-xl border border-gr-line bg-white p-4">
+              <p class="text-sm text-gr-sub">支付金额</p>
+              <p class="text-gr-ink mt-1">¥{{ order.amount }}</p>
             </div>
-            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-              <p class="text-sm text-slate-400">支付方式</p>
-              <p class="text-white mt-1">{{ order.pay_method }}</p>
+            <div class="rounded-xl border border-gr-line bg-white p-4">
+              <p class="text-sm text-gr-sub">支付方式</p>
+              <p class="text-gr-ink mt-1">{{ order.pay_method }}</p>
             </div>
-            <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
-              <p class="text-sm text-slate-400">支付渠道</p>
-              <p class="text-white mt-1">{{ order.channel || '系统模拟渠道' }}</p>
+            <div class="rounded-xl border border-gr-line bg-white p-4">
+              <p class="text-sm text-gr-sub">支付渠道</p>
+              <p class="text-gr-ink mt-1">{{ order.channel || '系统模拟渠道' }}</p>
             </div>
           </div>
 
-          <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-sm text-slate-300">
-            <p><span class="text-slate-400">创建时间：</span>{{ order.created_at }}</p>
-            <p class="mt-2"><span class="text-slate-400">支付时间：</span>{{ order.paid_at || '尚未支付' }}</p>
-            <p class="mt-2"><span class="text-slate-400">同步状态：</span>{{ isPaid ? '已完成' : '等待确认' }}</p>
+          <div class="rounded-xl border border-gr-line bg-white p-4 text-sm text-slate-600">
+            <p><span class="text-gr-sub">创建时间：</span>{{ order.created_at }}</p>
+            <p class="mt-2"><span class="text-gr-sub">支付时间：</span>{{ order.paid_at || '尚未支付' }}</p>
+            <p class="mt-2"><span class="text-gr-sub">同步状态：</span>{{ isPaid ? '已完成' : '等待确认' }}</p>
           </div>
         </div>
 
         <div class="mt-8 flex justify-center gap-3">
-          <a href="/" class="px-4 py-2 rounded-xl bg-slate-800 text-white">返回首页</a>
+          <a href="/" class="px-4 py-2.5 rounded-lg border border-gr-line text-gr-ink hover:border-slate-400 transition-colors">返回首页</a>
           <a href="/admin.html"
-            class="px-4 py-2 rounded-xl bg-gradient-to-r from-gr-blue to-gr-cyan text-white">查看后台</a>
+            class="px-4 py-2.5 rounded-lg bg-gradient-to-r from-gr-blue to-gr-cyan text-white hover:opacity-90 transition-opacity">查看后台</a>
         </div>
       </div>
     </div>

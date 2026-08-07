@@ -9,187 +9,204 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
             gr: {
-              900: '#0B1121',
-              800: '#151E32',
               blue: '#3B82F6',
-              cyan: '#06B6D4'
+              cyan: '#06B6D4',
+              ink: '#0F172A',
+              sub: '#64748B',
+              line: '#E5E9F0',
+              wash: '#F7F8FA'
             }
           }
         }
       }
     };
   </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #E5E9F0;
+    }
+
+    .tnum {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
 </head>
 
-<body class="bg-slate-950 text-slate-200 min-h-screen">
+<body class="bg-gr-wash text-slate-700 min-h-screen">
   <div id="app" class="max-w-6xl mx-auto p-6">
     <div class="flex items-center justify-between mb-8">
       <div>
-        <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">经营管理</p>
-        <h1 class="text-3xl font-bold text-white mt-2">退款与对账中心</h1>
+        <p class="text-gr-blue text-sm font-semibold uppercase tracking-[0.2em]">经营管理</p>
+        <h1 class="text-3xl font-bold text-gr-ink mt-2">退款与对账中心</h1>
       </div>
       <div class="flex gap-3">
-        <a href="/admin.html" class="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200">返回后台</a>
+        <a href="/admin.html" class="rounded-full border border-gr-line px-4 py-2 text-sm text-gr-ink hover:border-slate-400 transition-colors">返回后台</a>
         <a href="/"
-          class="rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan px-4 py-2 text-sm font-medium text-white">返回首页</a>
+          class="rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">返回首页</a>
       </div>
     </div>
 
     <div class="grid gap-4 md:grid-cols-4 mb-8">
-      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
-        <p class="text-slate-400 text-sm">本日收入</p>
-        <p class="text-2xl font-bold text-white mt-2">¥ {{ todayRevenue.toFixed(2) }}</p>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm">本日收入</p>
+        <p class="text-2xl font-bold text-gr-ink mt-2 tnum">¥ {{ todayRevenue.toFixed(2) }}</p>
       </div>
-      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
-        <p class="text-slate-400 text-sm">已退款</p>
-        <p class="text-2xl font-bold text-yellow-400 mt-2">¥ {{ totalRefund.toFixed(2) }}</p>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm">已退款</p>
+        <p class="text-2xl font-bold text-amber-600 mt-2 tnum">¥ {{ totalRefund.toFixed(2) }}</p>
       </div>
-      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
-        <p class="text-slate-400 text-sm">净收入</p>
-        <p class="text-2xl font-bold text-green-400 mt-2">¥ {{ netRevenue.toFixed(2) }}</p>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm">净收入</p>
+        <p class="text-2xl font-bold text-emerald-600 mt-2 tnum">¥ {{ netRevenue.toFixed(2) }}</p>
       </div>
-      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
-        <p class="text-slate-400 text-sm">处理中的退款</p>
-        <p class="text-2xl font-bold text-red-400 mt-2">{{ pendingRefunds }}</p>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm">处理中的退款</p>
+        <p class="text-2xl font-bold text-red-500 mt-2 tnum">{{ pendingRefunds }}</p>
       </div>
     </div>
 
     <div class="mb-8 grid gap-4 md:grid-cols-3">
-      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
-        <p class="text-slate-400 text-sm mb-2">退款比例</p>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm mb-2">退款比例</p>
         <div class="flex items-end gap-2">
-          <span class="text-3xl font-bold text-white">{{ refundRate }}%</span>
-          <span class="text-slate-500 text-xs">相对总收入</span>
+          <span class="text-3xl font-bold text-gr-ink tnum">{{ refundRate }}%</span>
+          <span class="text-slate-400 text-xs">相对总收入</span>
         </div>
       </div>
-      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
-        <p class="text-slate-400 text-sm mb-2">待审核</p>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm mb-2">待审核</p>
         <div class="flex items-end gap-2">
-          <span class="text-3xl font-bold text-yellow-400">{{ reviewCount }}</span>
-          <span class="text-slate-500 text-xs">条待处理</span>
+          <span class="text-3xl font-bold text-amber-600 tnum">{{ reviewCount }}</span>
+          <span class="text-slate-400 text-xs">条待处理</span>
         </div>
       </div>
-      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
-        <p class="text-slate-400 text-sm mb-2">已完成退款</p>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm mb-2">已完成退款</p>
         <div class="flex items-end gap-2">
-          <span class="text-3xl font-bold text-green-400">{{ completedCount }}</span>
-          <span class="text-slate-500 text-xs">笔已结清</span>
+          <span class="text-3xl font-bold text-emerald-600 tnum">{{ completedCount }}</span>
+          <span class="text-slate-400 text-xs">笔已结清</span>
         </div>
       </div>
     </div>
 
     <div class="mb-8 grid gap-4 md:grid-cols-2">
-      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
-        <p class="text-slate-400 text-sm mb-2">月度对账汇总</p>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm mb-2">月度对账汇总</p>
         <div class="space-y-2">
           <div v-for="item in monthlySummary" :key="item.label" class="flex items-center justify-between text-sm">
-            <span class="text-slate-300">{{ item.label }}</span>
-            <span class="text-white font-medium">¥ {{ item.amount.toFixed(2) }}</span>
+            <span class="text-slate-600">{{ item.label }}</span>
+            <span class="text-gr-ink font-medium tnum">¥ {{ item.amount.toFixed(2) }}</span>
           </div>
         </div>
       </div>
-      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
-        <p class="text-slate-400 text-sm mb-2">复核状态</p>
-        <div class="space-y-2 text-sm text-slate-300">
-          <div class="flex justify-between"><span>待审核</span><span class="text-yellow-400">{{ reviewCount }}</span></div>
-          <div class="flex justify-between"><span>退款中</span><span class="text-red-400">{{ inProcessCount }}</span></div>
-          <div class="flex justify-between"><span>已退款</span><span class="text-green-400">{{ completedCount }}</span>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm mb-2">复核状态</p>
+        <div class="space-y-2 text-sm text-slate-600">
+          <div class="flex justify-between"><span>待审核</span><span class="text-amber-600 tnum">{{ reviewCount }}</span></div>
+          <div class="flex justify-between"><span>退款中</span><span class="text-red-500 tnum">{{ inProcessCount }}</span></div>
+          <div class="flex justify-between"><span>已退款</span><span class="text-emerald-600 tnum">{{ completedCount }}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="mb-8 bg-slate-900 rounded-2xl border border-slate-800 p-4">
-      <p class="text-slate-400 text-sm mb-3">渠道结算占比</p>
+    <div class="mb-8 card rounded-xl p-4">
+      <p class="text-gr-sub text-sm mb-3">渠道结算占比</p>
       <div class="grid gap-3 md:grid-cols-3">
         <div v-for="channel in channelBreakdown" :key="channel.name"
-          class="rounded-xl border border-slate-800 bg-slate-800/40 p-3">
+          class="rounded-lg border border-gr-line bg-gr-wash p-3">
           <div class="flex items-center justify-between text-sm">
-            <span class="text-slate-300">{{ channel.label }}</span>
-            <span class="text-white font-medium">¥ {{ Number(channel.amount || 0).toFixed(2) }}</span>
+            <span class="text-slate-600">{{ channel.label }}</span>
+            <span class="text-gr-ink font-medium tnum">¥ {{ Number(channel.amount || 0).toFixed(2) }}</span>
           </div>
-          <div class="mt-3 h-2 rounded-full bg-slate-800">
+          <div class="mt-3 h-2 rounded-full bg-slate-200">
             <div class="h-2 rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan"
               :style="{ width: channel.percent + '%' }"></div>
           </div>
-          <p class="mt-2 text-xs text-slate-500">{{ channel.count }} 笔 · {{ channel.percent }}%</p>
+          <p class="mt-2 text-xs text-slate-400 tnum">{{ channel.count }} 笔 · {{ channel.percent }}%</p>
         </div>
       </div>
     </div>
 
-    <div class="bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden">
-      <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
+    <div class="card rounded-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-gr-line">
         <div>
-          <h2 class="text-lg font-bold text-white">退款申请列表</h2>
-          <p class="text-sm text-slate-400">人工审核与对账状态</p>
+          <h2 class="text-lg font-bold text-gr-ink">退款申请列表</h2>
+          <p class="text-sm text-gr-sub">人工审核与对账状态</p>
         </div>
         <button @click="exportRefunds"
-          class="rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-200">导出明细</button>
+          class="rounded-full border border-gr-line bg-white px-4 py-2 text-sm text-gr-ink hover:border-slate-400 transition-colors">导出明细</button>
       </div>
-      <table class="min-w-full text-sm">
-        <thead class="bg-slate-800 text-slate-300">
-          <tr>
-            <th class="px-4 py-3 text-left">订单号</th>
-            <th class="px-4 py-3 text-left">客户</th>
-            <th class="px-4 py-3 text-left">金额</th>
-            <th class="px-4 py-3 text-left">状态</th>
-            <th class="px-4 py-3 text-left">原因</th>
-            <th class="px-4 py-3 text-left">更新时间</th>
-            <th class="px-4 py-3 text-left">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in refundList" :key="item.order_id" class="border-t border-slate-800">
-            <td class="px-4 py-3 font-mono text-slate-200">{{ item.order_id }}</td>
-            <td class="px-4 py-3">{{ item.customer }}</td>
-            <td class="px-4 py-3">¥ {{ Number(item.amount || 0).toFixed(2) }}</td>
-            <td class="px-4 py-3"
-              :class="item.status === '待审核' ? 'text-yellow-400' : item.status === '已退款' ? 'text-green-400' : item.status === '退款中' ? 'text-red-400' : 'text-slate-300'">
-              {{ item.status }}</td>
-            <td class="px-4 py-3">{{ item.reason }}</td>
-            <td class="px-4 py-3">{{ item.updated_at }}</td>
-            <td class="px-4 py-3"><button @click="reviewRefund(item)" class="text-gr-cyan">{{ item.status === '待审核' ?
-                '审核' : '查看' }}</button></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-gr-wash text-slate-500">
+            <tr>
+              <th class="px-4 py-3 text-left font-medium">订单号</th>
+              <th class="px-4 py-3 text-left font-medium">客户</th>
+              <th class="px-4 py-3 text-left font-medium">金额</th>
+              <th class="px-4 py-3 text-left font-medium">状态</th>
+              <th class="px-4 py-3 text-left font-medium">原因</th>
+              <th class="px-4 py-3 text-left font-medium">更新时间</th>
+              <th class="px-4 py-3 text-left font-medium">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in refundList" :key="item.order_id" class="border-t border-gr-line hover:bg-gr-wash/60 transition-colors">
+              <td class="px-4 py-3 font-mono text-gr-ink">{{ item.order_id }}</td>
+              <td class="px-4 py-3">{{ item.customer }}</td>
+              <td class="px-4 py-3 tnum">¥ {{ Number(item.amount || 0).toFixed(2) }}</td>
+              <td class="px-4 py-3"
+                :class="item.status === '待审核' ? 'text-amber-600' : item.status === '已退款' ? 'text-emerald-600' : item.status === '退款中' ? 'text-red-500' : 'text-slate-500'">
+                {{ item.status }}</td>
+              <td class="px-4 py-3">{{ item.reason }}</td>
+              <td class="px-4 py-3 tnum">{{ item.updated_at }}</td>
+              <td class="px-4 py-3"><button @click="reviewRefund(item)" class="text-gr-blue hover:text-blue-700 transition-colors">{{ item.status === '待审核' ?
+                  '审核' : '查看' }}</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div v-if="selectedRefund" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
-      <div class="w-full max-w-lg rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
+    <div v-if="selectedRefund" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center px-4">
+      <div class="w-full max-w-lg rounded-2xl border border-gr-line bg-white p-6 shadow-2xl">
         <div class="flex items-center justify-between mb-4">
           <div>
-            <h2 class="text-xl font-semibold text-white">退款审核</h2>
-            <p class="text-sm text-slate-400">订单号：{{ selectedRefund.order_id }}</p>
+            <h2 class="text-xl font-semibold text-gr-ink">退款审核</h2>
+            <p class="text-sm text-gr-sub">订单号：{{ selectedRefund.order_id }}</p>
           </div>
           <button @click="selectedRefund = null"
-            class="rounded-full border border-slate-700 px-3 py-1 text-sm text-slate-300">关闭</button>
+            class="rounded-full border border-gr-line px-3 py-1 text-sm text-slate-600 hover:border-slate-400 transition-colors">关闭</button>
         </div>
-        <div class="space-y-4 text-sm text-slate-300">
-          <div class="rounded-2xl border border-slate-800 bg-slate-800/50 p-4">
-            <p class="text-slate-400">客户</p>
-            <p class="mt-1 text-white">{{ selectedRefund.customer }}</p>
+        <div class="space-y-4 text-sm text-slate-600">
+          <div class="rounded-xl border border-gr-line bg-gr-wash p-4">
+            <p class="text-gr-sub">客户</p>
+            <p class="mt-1 text-gr-ink">{{ selectedRefund.customer }}</p>
           </div>
-          <div class="rounded-2xl border border-slate-800 bg-slate-800/50 p-4">
-            <p class="text-slate-400">退款金额</p>
-            <p class="mt-1 text-white">¥ {{ Number(selectedRefund.amount || 0).toFixed(2) }}</p>
+          <div class="rounded-xl border border-gr-line bg-gr-wash p-4">
+            <p class="text-gr-sub">退款金额</p>
+            <p class="mt-1 text-gr-ink">¥ {{ Number(selectedRefund.amount || 0).toFixed(2) }}</p>
           </div>
-          <div class="rounded-2xl border border-slate-800 bg-slate-800/50 p-4">
-            <p class="text-slate-400">审核说明</p>
+          <div class="rounded-xl border border-gr-line bg-gr-wash p-4">
+            <p class="text-gr-sub">审核说明</p>
             <textarea v-model="reviewReason" rows="3"
-              class="w-full mt-2 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200 focus:border-gr-cyan outline-none"></textarea>
+              class="w-full mt-2 rounded-lg border border-gr-line bg-white px-3 py-2 text-gr-ink focus:border-gr-blue outline-none"></textarea>
           </div>
         </div>
         <div class="mt-6 flex gap-3 justify-end">
           <button @click="rejectRefund"
-            class="rounded-full border border-red-500/60 px-4 py-2 text-sm text-red-300">拒绝退款</button>
+            class="rounded-full border border-red-300 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">拒绝退款</button>
           <button @click="approveRefund"
-            class="rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan px-4 py-2 text-sm font-medium text-white">批准退款</button>
+            class="rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">批准退款</button>
         </div>
       </div>
     </div>

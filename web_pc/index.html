@@ -9,65 +9,30 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
             gr: {
-              900: '#0B1121',
-              800: '#151E32',
               blue: '#3B82F6',
-              cyan: '#06B6D4'
+              cyan: '#06B6D4',
+              ink: '#0F172A',
+              sub: '#64748B',
+              line: '#E5E9F0',
+              wash: '#F7F8FA'
             }
+          },
+          fontSize: {
+            'display': ['32px', { lineHeight: '40px', fontWeight: '800' }],
+            'h2': ['22px', { lineHeight: '28px', fontWeight: '700' }]
           }
         }
       }
     };
   </script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            gr: {
-              900: '#0B1121',
-              800: '#151E32',
-              blue: '#3B82F6',
-              cyan: '#06B6D4'
-            }
-          },
-          animation: {
-            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
-            blob: 'blob 7s infinite'
-          },
-          keyframes: {
-            fadeInUp: {
-              '0%': { opacity: '0', transform: 'translateY(20px)' },
-              '100%': { opacity: '1', transform: 'translateY(0)' }
-            },
-            blob: {
-              '0%': { transform: 'translate(0px, 0px) scale(1)' },
-              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-              '100%': { transform: 'translate(0px, 0px) scale(1)' }
-            }
-          }
-        }
-      }
-    };
-  </script>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    }
-
-    .glass-panel {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .text-gradient {
@@ -85,126 +50,141 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #E5E9F0;
+    }
+
+    .card:hover {
+      border-color: #BFDBFE;
+      box-shadow: 0 8px 24px -12px rgba(15, 23, 42, 0.12);
+    }
   </style>
 </head>
 
-<body class="bg-gr-900 text-slate-300 antialiased overflow-x-hidden selection:bg-gr-blue selection:text-white">
+<body class="bg-gr-wash text-slate-700 antialiased overflow-x-hidden selection:bg-gr-blue selection:text-white">
   <div id="app" class="min-h-screen flex flex-col">
-    <nav class="fixed w-full z-50 glass-panel transition-all duration-300"
-      :class="{ 'py-2': scrolled, 'py-4': !scrolled }">
-      <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <div class="flex items-center gap-4 cursor-pointer">
-          <div
-            class="w-10 h-10 rounded-xl bg-gradient-to-br from-gr-blue to-gr-cyan flex items-center justify-center text-white font-black text-xl shadow-[0_0_15px_rgba(6,182,212,0.5)]">
-            GR</div>
-          <span class="font-bold text-xl text-white tracking-wide">光润网络<span class="text-gr-cyan">科技</span></span>
-        </div>
-        <div class="hidden md:flex space-x-8 text-sm font-medium">
-          <a href="#hero" class="hover:text-white transition">首页</a>
-          <a href="#news" class="hover:text-white transition">资讯中心</a>
-          <a href="#matrix" class="hover:text-white transition">业务矩阵</a>
-          <a href="/company.html" class="hover:text-white transition">公司风采</a>
-          <a href="/admin.html" class="hover:text-white transition">订单后台</a>
-          <a href="/refund.html" class="hover:text-white transition">对账中心</a>
-          <a href="#contact" class="hover:text-white transition">联系合作</a>
-        </div>
-        <div class="flex items-center gap-3">
-          <a href="/refund.html"
-            class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium transition border border-white/10">对账中心</a>
-          <a href="/admin.html"
-            class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium transition border border-white/10">订单后台</a>
+    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gr-line">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-8">
+            <a href="#hero" class="flex items-center gap-2.5 shrink-0">
+              <div
+                class="w-8 h-8 rounded-lg bg-gradient-to-br from-gr-blue to-gr-cyan flex items-center justify-center text-white font-black text-sm">
+                GR</div>
+              <span class="font-bold text-base text-gr-ink tracking-wide">光润网络<span class="text-gr-blue">科技</span></span>
+            </a>
+            <div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+              <a href="#hero" class="hover:text-gr-blue transition-colors">首页</a>
+              <a href="#news" class="hover:text-gr-blue transition-colors">资讯中心</a>
+              <a href="#matrix" class="hover:text-gr-blue transition-colors">业务矩阵</a>
+              <a href="/company.html" class="hover:text-gr-blue transition-colors">公司风采</a>
+              <a href="/admin.html" class="hover:text-gr-blue transition-colors">订单后台</a>
+              <a href="/refund.html" class="hover:text-gr-blue transition-colors">对账中心</a>
+              <a href="#contact" class="hover:text-gr-blue transition-colors">联系合作</a>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <label class="hidden lg:flex items-center gap-2 bg-gr-wash border border-gr-line rounded-full px-3.5 py-1.5 text-sm text-slate-400 w-56">
+              <i class="fa-solid fa-magnifying-glass text-xs"></i>
+              <span>搜索资讯与服务</span>
+            </label>
+            <a href="/admin.html"
+              class="bg-gr-blue hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">订单后台</a>
+          </div>
         </div>
       </div>
     </nav>
 
-    <header id="hero" class="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden flex-shrink-0">
-      <div
-        class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gr-blue/20 rounded-full blur-[120px] -z-10 animate-blob">
-      </div>
-      <div
-        class="absolute top-20 left-1/4 w-[600px] h-[600px] bg-gr-cyan/10 rounded-full blur-[100px] -z-10 animate-blob"
-        style="animation-delay: 2s"></div>
-      <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
-        <div
-          class="inline-block px-4 py-1.5 rounded-full glass-panel text-gr-cyan text-xs font-semibold tracking-widest uppercase mb-6 border-gr-cyan/30">
-          全栈数字与实体产业服务商</div>
-        <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-8 leading-tight">重塑数字边界 <br /><span
-            class="text-gradient">驱动业务无界增长</span></h1>
-        <p class="mt-4 text-lg md:text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed mb-10 font-light">
-          从企业级软件研发、DevOps 架构部署，到安防弱电工程施工，再到工业级新材料直供。我们为您提供一站式、跨领域的综合解决方案。</p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <a href="#matrix"
-            class="bg-gradient-to-r from-gr-blue to-gr-cyan text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-[0_0_25px_rgba(6,182,212,0.5)] hover:-translate-y-1 transition-all duration-300">探索业务矩阵</a>
-          <a href="/company.html"
-            class="border border-white/10 bg-white/5 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white/10 transition-all duration-300">查看企业风采</a>
+    <header id="hero" class="relative border-b border-gr-line overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900 to-blue-950"></div>
+      <div class="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-gr-cyan/10 rounded-full blur-[100px]"></div>
+      <div class="max-w-7xl mx-auto px-6 py-10 md:py-14 relative z-10">
+        <div class="flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
+          <div class="flex-1">
+            <div
+              class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-gr-cyan text-xs font-semibold tracking-widest uppercase mb-4">
+              <span class="w-1.5 h-1.5 rounded-full bg-gr-cyan animate-pulse"></span>
+              全栈数字与实体产业服务商</div>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">重塑数字边界，驱动业务<span
+                class="text-gradient">无界增长</span></h1>
+            <p class="mt-3 text-slate-300 max-w-2xl leading-relaxed">从企业级软件研发、DevOps 架构部署，到安防弱电工程施工，再到工业级新材料直供，一站式跨领域综合解决方案。</p>
+          </div>
+          <div class="flex flex-row md:flex-col gap-3 shrink-0">
+            <a href="#matrix"
+              class="flex-1 md:flex-none text-center bg-gradient-to-r from-gr-blue to-gr-cyan text-white px-6 py-3 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity">探索业务矩阵</a>
+            <a href="/company.html"
+              class="flex-1 md:flex-none text-center border border-white/20 bg-white/5 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-white/10 transition-colors">查看企业风采</a>
+          </div>
         </div>
       </div>
     </header>
 
-    <section id="news" class="py-16 relative z-10 bg-white">
+    <section id="news" class="py-10 relative z-10">
       <div class="max-w-7xl mx-auto px-6">
-        <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-8 gap-4">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-6 gap-4">
           <div>
-            <p class="text-gr-blue text-sm font-semibold uppercase tracking-[0.2em]">资讯中心</p>
-            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">公司与行业最新动态</h2>
+            <p class="text-gr-blue text-xs font-semibold uppercase tracking-[0.2em]">资讯中心</p>
+            <h2 class="text-h2 text-gr-ink mt-1">公司与行业最新动态</h2>
           </div>
           <div class="flex flex-wrap gap-2">
             <button v-for="cat in newsCategories" :key="cat.id" @click="activeNewsCategory = cat.id"
-              class="px-4 py-2 rounded-full text-sm font-medium transition-colors border"
-              :class="activeNewsCategory === cat.id ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'">
+              class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors border"
+              :class="activeNewsCategory === cat.id ? 'bg-gr-ink text-white border-gr-ink' : 'bg-white text-slate-600 border-gr-line hover:border-slate-400'">
               {{ cat.name }}
             </button>
           </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           <a v-for="item in currentNews" :key="item.id" :href="item.href || '#'"
-            class="group block rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 bg-white">
-            <div class="aspect-[16/9] bg-slate-100 overflow-hidden">
+            class="group block rounded-xl overflow-hidden card transition-all duration-200">
+            <div class="aspect-[16/9] bg-gr-wash overflow-hidden">
               <img :src="item.image" :alt="item.title" class="w-full h-full object-cover" loading="lazy" />
             </div>
-            <div class="p-5">
-              <span class="inline-block text-xs font-semibold text-gr-blue bg-blue-50 rounded-full px-3 py-1">{{ item.tag }}</span>
-              <h3 class="mt-3 text-lg font-bold text-slate-900 leading-snug group-hover:text-gr-blue transition-colors">{{ item.title }}</h3>
-              <p class="mt-2 text-sm text-slate-500 leading-relaxed line-clamp-2">{{ item.summary }}</p>
-              <div class="mt-4 flex items-center justify-between text-xs text-slate-400">
+            <div class="p-4">
+              <span class="inline-block text-xs font-semibold text-gr-blue bg-blue-50 rounded px-2 py-0.5">{{ item.tag }}</span>
+              <h3 class="mt-2.5 text-base font-bold text-gr-ink leading-snug group-hover:text-gr-blue transition-colors line-clamp-2">{{ item.title }}</h3>
+              <p class="mt-2 text-sm text-gr-sub leading-relaxed line-clamp-2">{{ item.summary }}</p>
+              <div class="mt-3 flex items-center justify-between text-xs text-slate-400">
                 <span>{{ item.source }}</span>
                 <span>{{ item.date }}</span>
               </div>
             </div>
           </a>
         </div>
-        <div v-if="!currentNews.length" class="text-center text-slate-400 py-16">该分类下暂无内容，敬请期待。</div>
+        <div v-if="!currentNews.length" class="text-center text-gr-sub py-16">该分类下暂无内容，敬请期待。</div>
       </div>
     </section>
 
-    <section class="py-6 relative z-10">
+    <section class="py-4 relative z-10">
       <div class="max-w-7xl mx-auto px-6">
-        <div class="glass-panel rounded-3xl p-6 border border-white/10">
+        <div class="card rounded-xl p-5">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">实时订单看板</p>
-              <h3 class="text-xl font-semibold text-white mt-1">最近 4 笔订单会在这里同步展示</h3>
+              <p class="text-gr-blue text-xs font-semibold uppercase tracking-[0.2em]">实时订单看板</p>
+              <h3 class="text-base font-bold text-gr-ink mt-1">最近 4 笔订单会在这里同步展示</h3>
             </div>
-            <a href="/admin.html" class="text-sm text-slate-400 hover:text-white transition">查看后台</a>
+            <a href="/admin.html" class="text-sm text-gr-sub hover:text-gr-blue transition-colors">查看后台 →</a>
           </div>
           <div v-if="recentOrders.length" class="grid gap-3 md:grid-cols-2">
             <div v-for="order in recentOrders" :key="order.order_id"
-              class="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+              class="rounded-lg border border-gr-line bg-gr-wash p-3.5">
               <div class="flex items-center justify-between">
                 <div>
-                  <p class="font-mono text-sm text-slate-200">{{ order.order_id }}</p>
-                  <p class="text-sm text-slate-400 mt-1">{{ order.title }}</p>
+                  <p class="font-mono text-sm text-gr-ink">{{ order.order_id }}</p>
+                  <p class="text-sm text-gr-sub mt-1">{{ order.title }}</p>
                 </div>
-                <span :class="order.pay_status === 1 ? 'text-green-400' : 'text-yellow-400'"
-                  class="text-sm font-medium">{{ order.pay_status === 1 ? '已支付' : '待支付' }}</span>
+                <span :class="order.pay_status === 1 ? 'text-emerald-600 bg-emerald-50' : 'text-amber-600 bg-amber-50'"
+                  class="text-xs font-medium px-2 py-1 rounded">{{ order.pay_status === 1 ? '已支付' : '待支付' }}</span>
               </div>
-              <div class="flex justify-between items-center mt-3 text-sm text-slate-400">
+              <div class="flex justify-between items-center mt-3 text-sm text-gr-sub">
                 <span>¥{{ order.amount }}</span>
                 <span>{{ order.pay_method }}</span>
               </div>
             </div>
           </div>
-          <div v-else class="text-sm text-slate-400">暂时还没有订单记录，完成一次支付后会自动出现在这里。</div>
+          <div v-else class="text-sm text-gr-sub">暂时还没有订单记录，完成一次支付后会自动出现在这里。</div>
         </div>
       </div>
     </section>
@@ -212,306 +192,306 @@
     <section class="py-8 relative z-10">
       <div class="max-w-7xl mx-auto px-6">
         <div class="grid gap-4 md:grid-cols-4">
-          <div class="glass-panel rounded-2xl p-4 border border-white/10">
-            <p class="text-xs uppercase tracking-[0.2em] text-slate-400">业务经验</p>
-            <p class="mt-2 text-3xl font-bold text-white">8+</p>
-            <p class="mt-1 text-sm text-slate-400">年行业实践</p>
+          <div class="card rounded-xl p-4">
+            <p class="text-xs uppercase tracking-[0.2em] text-gr-sub">业务经验</p>
+            <p class="mt-2 text-3xl font-bold text-gr-ink">8+</p>
+            <p class="mt-1 text-sm text-gr-sub">年行业实践</p>
           </div>
-          <div class="glass-panel rounded-2xl p-4 border border-white/10">
-            <p class="text-xs uppercase tracking-[0.2em] text-slate-400">累计交付</p>
-            <p class="mt-2 text-3xl font-bold text-white">60+</p>
-            <p class="mt-1 text-sm text-slate-400">项目案例</p>
+          <div class="card rounded-xl p-4">
+            <p class="text-xs uppercase tracking-[0.2em] text-gr-sub">累计交付</p>
+            <p class="mt-2 text-3xl font-bold text-gr-ink">60+</p>
+            <p class="mt-1 text-sm text-gr-sub">项目案例</p>
           </div>
-          <div class="glass-panel rounded-2xl p-4 border border-white/10">
-            <p class="text-xs uppercase tracking-[0.2em] text-slate-400">客户留存</p>
-            <p class="mt-2 text-3xl font-bold text-white">92%</p>
-            <p class="mt-1 text-sm text-slate-400">复购与续约</p>
+          <div class="card rounded-xl p-4">
+            <p class="text-xs uppercase tracking-[0.2em] text-gr-sub">客户留存</p>
+            <p class="mt-2 text-3xl font-bold text-gr-ink">92%</p>
+            <p class="mt-1 text-sm text-gr-sub">复购与续约</p>
           </div>
-          <div class="glass-panel rounded-2xl p-4 border border-white/10">
-            <p class="text-xs uppercase tracking-[0.2em] text-slate-400">协同效率</p>
-            <p class="mt-2 text-3xl font-bold text-white">3x</p>
-            <p class="mt-1 text-sm text-slate-400">业务提升</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="py-20 relative z-10">
-      <div class="max-w-7xl mx-auto px-6">
-        <div class="grid gap-6 md:grid-cols-3">
-          <div class="glass-panel rounded-3xl p-6 border border-white/10">
-            <p class="text-sm text-gr-cyan uppercase tracking-[0.2em]">01</p>
-            <h3 class="text-2xl font-bold text-white mt-3">数字化落地</h3>
-            <p class="text-slate-400 mt-3 leading-relaxed">覆盖官网、商城、小程序、后台管理等数字资产建设，把品牌能力转化为可运营的增长系统。</p>
-          </div>
-          <div class="glass-panel rounded-3xl p-6 border border-white/10">
-            <p class="text-sm text-gr-cyan uppercase tracking-[0.2em]">02</p>
-            <h3 class="text-2xl font-bold text-white mt-3">工程交付</h3>
-            <p class="text-slate-400 mt-3 leading-relaxed">从现场勘测、弱电布线、安防监控到验收维护，形成标准化项目执行闭环。</p>
-          </div>
-          <div class="glass-panel rounded-3xl p-6 border border-white/10">
-            <p class="text-sm text-gr-cyan uppercase tracking-[0.2em]">03</p>
-            <h3 class="text-2xl font-bold text-white mt-3">产业链服务</h3>
-            <p class="text-slate-400 mt-3 leading-relaxed">通过工业物料、办公用品、员工福利等场景增强业务延展性，连接供应链和消费端。</p>
+          <div class="card rounded-xl p-4">
+            <p class="text-xs uppercase tracking-[0.2em] text-gr-sub">协同效率</p>
+            <p class="mt-2 text-3xl font-bold text-gr-ink">3x</p>
+            <p class="mt-1 text-sm text-gr-sub">业务提升</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="py-20 relative z-10">
+    <section class="py-14 relative z-10">
       <div class="max-w-7xl mx-auto px-6">
-        <div class="mb-10 text-center">
-          <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">合作案例</p>
-          <h2 class="text-3xl md:text-4xl font-bold text-white mt-3">把业务场景转成长期增长资产</h2>
+        <div class="grid gap-5 md:grid-cols-3">
+          <div class="card rounded-xl p-6">
+            <p class="text-sm text-gr-blue uppercase tracking-[0.2em]">01</p>
+            <h3 class="text-xl font-bold text-gr-ink mt-3">数字化落地</h3>
+            <p class="text-gr-sub mt-3 leading-relaxed">覆盖官网、商城、小程序、后台管理等数字资产建设，把品牌能力转化为可运营的增长系统。</p>
+          </div>
+          <div class="card rounded-xl p-6">
+            <p class="text-sm text-gr-blue uppercase tracking-[0.2em]">02</p>
+            <h3 class="text-xl font-bold text-gr-ink mt-3">工程交付</h3>
+            <p class="text-gr-sub mt-3 leading-relaxed">从现场勘测、弱电布线、安防监控到验收维护，形成标准化项目执行闭环。</p>
+          </div>
+          <div class="card rounded-xl p-6">
+            <p class="text-sm text-gr-blue uppercase tracking-[0.2em]">03</p>
+            <h3 class="text-xl font-bold text-gr-ink mt-3">产业链服务</h3>
+            <p class="text-gr-sub mt-3 leading-relaxed">通过工业物料、办公用品、员工福利等场景增强业务延展性，连接供应链和消费端。</p>
+          </div>
         </div>
-        <div class="grid gap-6 md:grid-cols-3">
-          <div class="glass-panel rounded-3xl p-6 border border-white/10">
+      </div>
+    </section>
+
+    <section class="py-14 relative z-10 bg-white border-y border-gr-line">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="mb-8 text-center">
+          <p class="text-gr-blue text-sm font-semibold uppercase tracking-[0.2em]">合作案例</p>
+          <h2 class="text-2xl md:text-3xl font-bold text-gr-ink mt-2">把业务场景转成长期增长资产</h2>
+        </div>
+        <div class="grid gap-5 md:grid-cols-3">
+          <div class="rounded-xl border border-gr-line p-6 hover:border-blue-200 transition-colors">
             <div class="flex items-center justify-between mb-4">
-              <span class="text-sm text-gr-cyan">品牌官网与商城</span>
+              <span class="text-sm text-gr-blue">品牌官网与商城</span>
               <span class="text-xl">⚡</span>
             </div>
-            <h3 class="text-xl font-bold text-white">企业数字品牌升级</h3>
-            <p class="text-slate-400 mt-3 leading-relaxed">为企业建立统一门户、在线客服与订单闭环，提升客户转化效率。</p>
-            <div class="mt-5 text-sm text-white">
-              <span class="text-gr-cyan">+ 3.2x</span> 转化提升
+            <h3 class="text-lg font-bold text-gr-ink">企业数字品牌升级</h3>
+            <p class="text-gr-sub mt-3 leading-relaxed">为企业建立统一门户、在线客服与订单闭环，提升客户转化效率。</p>
+            <div class="mt-5 text-sm text-gr-ink">
+              <span class="text-gr-blue font-semibold">+ 3.2x</span> 转化提升
             </div>
           </div>
-          <div class="glass-panel rounded-3xl p-6 border border-white/10">
+          <div class="rounded-xl border border-gr-line p-6 hover:border-blue-200 transition-colors">
             <div class="flex items-center justify-between mb-4">
-              <span class="text-sm text-gr-cyan">安防项目</span>
+              <span class="text-sm text-gr-blue">安防项目</span>
               <span class="text-xl">🛡️</span>
             </div>
-            <h3 class="text-xl font-bold text-white">企业级安全建设</h3>
-            <p class="text-slate-400 mt-3 leading-relaxed">针对厂区和办公场景配套布线、监控、门禁与告警系统，保障运营稳定。</p>
-            <div class="mt-5 text-sm text-white">
-              <span class="text-gr-cyan">99.9%</span> 系统稳定性
+            <h3 class="text-lg font-bold text-gr-ink">企业级安全建设</h3>
+            <p class="text-gr-sub mt-3 leading-relaxed">针对厂区和办公场景配套布线、监控、门禁与告警系统，保障运营稳定。</p>
+            <div class="mt-5 text-sm text-gr-ink">
+              <span class="text-gr-blue font-semibold">99.9%</span> 系统稳定性
             </div>
           </div>
-          <div class="glass-panel rounded-3xl p-6 border border-white/10">
+          <div class="rounded-xl border border-gr-line p-6 hover:border-blue-200 transition-colors">
             <div class="flex items-center justify-between mb-4">
-              <span class="text-sm text-gr-cyan">采购与运营</span>
+              <span class="text-sm text-gr-blue">采购与运营</span>
               <span class="text-xl">📦</span>
             </div>
-            <h3 class="text-xl font-bold text-white">供应链服务协同</h3>
-            <p class="text-slate-400 mt-3 leading-relaxed">从办公耗材、工业物料到员工福利采购，形成可持续的增长型供应链闭环。</p>
-            <div class="mt-5 text-sm text-white">
-              <span class="text-gr-cyan">Month-on-month</span> 订单增长
+            <h3 class="text-lg font-bold text-gr-ink">供应链服务协同</h3>
+            <p class="text-gr-sub mt-3 leading-relaxed">从办公耗材、工业物料到员工福利采购，形成可持续的增长型供应链闭环。</p>
+            <div class="mt-5 text-sm text-gr-ink">
+              <span class="text-gr-blue font-semibold">持续增长</span> 订单月度环比
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="py-20 relative z-10">
+    <section class="py-14 relative z-10">
       <div class="max-w-7xl mx-auto px-6">
-        <div class="mb-10 text-center">
-          <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">合作流程</p>
-          <h2 class="text-3xl md:text-4xl font-bold text-white mt-3">从需求沟通到落地交付的闭环机制</h2>
+        <div class="mb-8 text-center">
+          <p class="text-gr-blue text-sm font-semibold uppercase tracking-[0.2em]">合作流程</p>
+          <h2 class="text-2xl md:text-3xl font-bold text-gr-ink mt-2">从需求沟通到落地交付的闭环机制</h2>
         </div>
-        <div class="grid gap-5 md:grid-cols-4">
-          <div class="glass-panel rounded-3xl p-5 border border-white/10">
+        <div class="grid gap-4 md:grid-cols-4">
+          <div class="card rounded-xl p-5">
             <div
-              class="w-10 h-10 rounded-full bg-gr-blue/20 text-gr-cyan flex items-center justify-center mb-4 font-bold">
+              class="w-9 h-9 rounded-full bg-blue-50 text-gr-blue flex items-center justify-center mb-4 font-bold text-sm">
               1</div>
-            <h3 class="text-lg font-bold text-white">需求诊断</h3>
-            <p class="text-slate-400 mt-2 text-sm">明确业务目标、用户场景与预算边界，进行可行性评估。</p>
+            <h3 class="text-base font-bold text-gr-ink">需求诊断</h3>
+            <p class="text-gr-sub mt-2 text-sm">明确业务目标、用户场景与预算边界，进行可行性评估。</p>
           </div>
-          <div class="glass-panel rounded-3xl p-5 border border-white/10">
+          <div class="card rounded-xl p-5">
             <div
-              class="w-10 h-10 rounded-full bg-gr-blue/20 text-gr-cyan flex items-center justify-center mb-4 font-bold">
+              class="w-9 h-9 rounded-full bg-blue-50 text-gr-blue flex items-center justify-center mb-4 font-bold text-sm">
               2</div>
-            <h3 class="text-lg font-bold text-white">方案设计</h3>
-            <p class="text-slate-400 mt-2 text-sm">结合数字化、工程与供应链能力，输出分阶段落地方案。</p>
+            <h3 class="text-base font-bold text-gr-ink">方案设计</h3>
+            <p class="text-gr-sub mt-2 text-sm">结合数字化、工程与供应链能力，输出分阶段落地方案。</p>
           </div>
-          <div class="glass-panel rounded-3xl p-5 border border-white/10">
+          <div class="card rounded-xl p-5">
             <div
-              class="w-10 h-10 rounded-full bg-gr-blue/20 text-gr-cyan flex items-center justify-center mb-4 font-bold">
+              class="w-9 h-9 rounded-full bg-blue-50 text-gr-blue flex items-center justify-center mb-4 font-bold text-sm">
               3</div>
-            <h3 class="text-lg font-bold text-white">实施交付</h3>
-            <p class="text-slate-400 mt-2 text-sm">前端页面、云部署、安防施工与采购环节同步推进，确保执行质量。</p>
+            <h3 class="text-base font-bold text-gr-ink">实施交付</h3>
+            <p class="text-gr-sub mt-2 text-sm">前端页面、云部署、安防施工与采购环节同步推进，确保执行质量。</p>
           </div>
-          <div class="glass-panel rounded-3xl p-5 border border-white/10">
+          <div class="card rounded-xl p-5">
             <div
-              class="w-10 h-10 rounded-full bg-gr-blue/20 text-gr-cyan flex items-center justify-center mb-4 font-bold">
+              class="w-9 h-9 rounded-full bg-blue-50 text-gr-blue flex items-center justify-center mb-4 font-bold text-sm">
               4</div>
-            <h3 class="text-lg font-bold text-white">持续优化</h3>
-            <p class="text-slate-400 mt-2 text-sm">提供运营支持、数据反馈与后续迭代，让业务持续增长。</p>
+            <h3 class="text-base font-bold text-gr-ink">持续优化</h3>
+            <p class="text-gr-sub mt-2 text-sm">提供运营支持、数据反馈与后续迭代，让业务持续增长。</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="matrix" class="py-20 relative z-10 flex-grow">
+    <section id="matrix" class="py-14 relative z-10 flex-grow bg-white border-t border-gr-line">
       <div class="max-w-7xl mx-auto px-6">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-8">
           <div>
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-3">多维业务矩阵</h2>
-            <p class="text-slate-400">点击下方类目，预览光润网络为您提供的专属服务与结算入口。</p>
+            <p class="text-gr-blue text-sm font-semibold uppercase tracking-[0.2em]">多维业务矩阵</p>
+            <h2 class="text-2xl md:text-3xl font-bold text-gr-ink mt-2">点击下方类目，预览光润网络为您提供的专属服务与结算入口</h2>
           </div>
         </div>
-        <div class="flex overflow-x-auto no-scrollbar gap-3 mb-10 pb-2">
+        <div class="flex overflow-x-auto no-scrollbar gap-2 mb-8 pb-1">
           <button v-for="tab in categories" :key="tab.id" @click="activeTab = tab.id"
-            class="whitespace-nowrap px-6 py-3 rounded-2xl font-medium transition-all duration-300 flex items-center gap-3 border"
-            :class="activeTab === tab.id ? 'bg-gr-800 text-white border-gr-blue shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'glass-panel text-slate-400 border-transparent hover:text-white'">
+            class="whitespace-nowrap px-5 py-2.5 rounded-lg font-medium transition-colors flex items-center gap-2 border text-sm"
+            :class="activeTab === tab.id ? 'bg-gr-ink text-white border-gr-ink' : 'bg-white text-slate-600 border-gr-line hover:border-slate-400'">
             <i :class="['fa-solid', tab.icon]"></i> {{ tab.name }}
           </button>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px]">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[400px]">
           <div v-for="product in currentProducts" :key="product.id"
-            class="glass-panel rounded-3xl p-6 group hover:bg-gr-800/80 transition-all duration-500 hover:-translate-y-2 border border-white/5 hover:border-white/10 flex flex-col animate-fade-in-up">
-            <div class="flex justify-between items-start mb-6">
+            class="card rounded-xl p-6 transition-all duration-200 flex flex-col">
+            <div class="flex justify-between items-start mb-5">
               <div
-                class="w-14 h-14 rounded-2xl bg-gr-900 flex items-center justify-center border border-white/10 text-2xl group-hover:scale-110 transition-transform duration-300"
+                class="w-12 h-12 rounded-xl bg-gr-wash flex items-center justify-center border border-gr-line text-xl"
                 :class="product.color">
                 <i :class="['fa-solid', product.icon]"></i>
               </div>
               <div v-if="product.price !== null" class="text-right">
-                <span class="text-xs text-slate-500 block">{{ product.priceLabel || '标准报价' }}</span>
-                <span class="font-bold text-white text-lg">¥ {{ product.price }}</span>
+                <span class="text-xs text-slate-400 block">{{ product.priceLabel || '标准报价' }}</span>
+                <span class="font-bold text-gr-ink text-lg">¥ {{ product.price }}</span>
               </div>
               <div v-else class="text-right">
-                <span class="text-xs text-slate-500 block">合作方式</span>
-                <span class="font-bold text-gr-cyan text-lg">按需定制</span>
+                <span class="text-xs text-slate-400 block">合作方式</span>
+                <span class="font-bold text-gr-blue text-lg">按需定制</span>
               </div>
             </div>
-            <h3 class="text-xl font-bold text-white mb-3">{{ product.title }}</h3>
-            <p class="text-slate-400 text-sm leading-relaxed flex-grow">{{ product.desc }}</p>
-            <div class="flex flex-wrap gap-2 mt-6 mb-6">
+            <h3 class="text-lg font-bold text-gr-ink mb-2.5">{{ product.title }}</h3>
+            <p class="text-gr-sub text-sm leading-relaxed flex-grow">{{ product.desc }}</p>
+            <div class="flex flex-wrap gap-2 mt-5 mb-5">
               <span v-for="tag in product.tags" :key="tag"
-                class="px-3 py-1 rounded-full bg-white/5 text-xs text-slate-300 border border-white/10">{{ tag }}</span>
+                class="px-2.5 py-1 rounded bg-gr-wash text-xs text-slate-500 border border-gr-line">{{ tag }}</span>
             </div>
             <button v-if="product.buyable" @click="openCheckout(product)"
-              class="w-full py-3 rounded-xl bg-white/5 hover:bg-gr-blue text-white font-medium transition-all duration-300 border border-white/10 hover:border-gr-blue group-hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]">立即下单
-              <i class="fa-solid fa-arrow-right ml-2 opacity-0 group-hover:opacity-100 transition-opacity"></i></button>
+              class="w-full py-2.5 rounded-lg bg-gr-ink hover:bg-gr-blue text-white font-medium transition-colors text-sm">立即下单
+              <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i></button>
             <button v-else
-              class="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-medium transition-all duration-300 border border-white/10">预约方案评估</button>
+              class="w-full py-2.5 rounded-lg bg-gr-wash hover:bg-slate-100 text-gr-ink font-medium transition-colors border border-gr-line text-sm">预约方案评估</button>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="contact" class="py-16 border-t border-white/10">
-      <div class="max-w-7xl mx-auto px-6 grid gap-6 md:grid-cols-2">
-        <div class="glass-panel rounded-3xl p-8">
-          <p class="text-gr-cyan text-sm font-semibold uppercase tracking-[0.2em]">合作咨询</p>
-          <h3 class="text-2xl font-bold text-white mt-3">欢迎与我们洽谈数字化转型与实体产业合作</h3>
-          <p class="text-slate-400 mt-4">我们提供从品牌门户、商城结算系统、云部署到安防工程与工业物料供应的跨界方案。</p>
+    <section id="contact" class="py-14">
+      <div class="max-w-7xl mx-auto px-6 grid gap-5 md:grid-cols-2">
+        <div class="card rounded-xl p-8">
+          <p class="text-gr-blue text-sm font-semibold uppercase tracking-[0.2em]">合作咨询</p>
+          <h3 class="text-xl font-bold text-gr-ink mt-3">欢迎与我们洽谈数字化转型与实体产业合作</h3>
+          <p class="text-gr-sub mt-4">我们提供从品牌门户、商城结算系统、云部署到安防工程与工业物料供应的跨界方案。</p>
           <div class="mt-6 grid gap-3 sm:grid-cols-3">
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-3">
+            <div class="rounded-lg border border-gr-line bg-gr-wash p-3">
               <p class="text-xs text-slate-400 uppercase tracking-[0.2em]">适用场景</p>
-              <p class="mt-2 text-white font-medium">企业官网</p>
+              <p class="mt-2 text-gr-ink font-medium">企业官网</p>
             </div>
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-3">
+            <div class="rounded-lg border border-gr-line bg-gr-wash p-3">
               <p class="text-xs text-slate-400 uppercase tracking-[0.2em]">交付方式</p>
-              <p class="mt-2 text-white font-medium">全栈落地</p>
+              <p class="mt-2 text-gr-ink font-medium">全栈落地</p>
             </div>
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-3">
+            <div class="rounded-lg border border-gr-line bg-gr-wash p-3">
               <p class="text-xs text-slate-400 uppercase tracking-[0.2em]">服务周期</p>
-              <p class="mt-2 text-white font-medium">按需推进</p>
+              <p class="mt-2 text-gr-ink font-medium">按需推进</p>
             </div>
           </div>
         </div>
-        <div class="glass-panel rounded-3xl p-8">
-          <p class="text-slate-400">联系电话</p>
-          <p class="text-2xl font-bold text-white mt-2">138-8888-8888</p>
-          <p class="text-slate-400 mt-4">邮箱：service@kmgrnet.com</p>
-          <div class="mt-6 flex flex-wrap gap-3 text-xs text-slate-300">
-            <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5">数字化转型</span>
-            <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5">工程施工</span>
-            <span class="px-3 py-1 rounded-full border border-white/10 bg-white/5">产业链赋能</span>
+        <div class="card rounded-xl p-8">
+          <p class="text-gr-sub">联系电话</p>
+          <p class="text-2xl font-bold text-gr-ink mt-2">138-8888-8888</p>
+          <p class="text-gr-sub mt-4">邮箱：service@kmgrnet.com</p>
+          <div class="mt-6 flex flex-wrap gap-2 text-xs text-slate-500">
+            <span class="px-3 py-1 rounded-full border border-gr-line bg-gr-wash">数字化转型</span>
+            <span class="px-3 py-1 rounded-full border border-gr-line bg-gr-wash">工程施工</span>
+            <span class="px-3 py-1 rounded-full border border-gr-line bg-gr-wash">产业链赋能</span>
           </div>
-          <div class="mt-6 rounded-2xl border border-gr-cyan/30 bg-gr-cyan/10 p-4 text-sm text-slate-200">
+          <div class="mt-6 rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-600">
             我们支持需求沟通、方案评估、落地实施与后续运营维护，帮助企业持续增长。
           </div>
         </div>
       </div>
     </section>
 
-    <footer class="border-t border-white/10 bg-gr-900 py-10 relative z-10">
+    <footer class="border-t border-gr-line bg-white py-8 relative z-10">
       <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div class="text-slate-500 text-sm text-center md:text-left">
-          <p class="font-bold text-slate-300 mb-1">昆明光润网络科技有限公司</p>
+        <div class="text-slate-400 text-sm text-center md:text-left">
+          <p class="font-bold text-gr-ink mb-1">昆明光润网络科技有限公司</p>
           <p>© 2026 版权所有 | 构建全栈数字与实体桥梁</p>
         </div>
         <div class="text-slate-500 text-sm flex flex-wrap gap-4 justify-center md:justify-end">
-          <a href="/company.html" class="hover:text-white transition">公司风采</a>
-          <a href="/admin.html" class="hover:text-white transition">订单后台</a>
-          <a href="/refund.html" class="hover:text-white transition">对账中心</a>
+          <a href="/company.html" class="hover:text-gr-blue transition-colors">公司风采</a>
+          <a href="/admin.html" class="hover:text-gr-blue transition-colors">订单后台</a>
+          <a href="/refund.html" class="hover:text-gr-blue transition-colors">对账中心</a>
         </div>
       </div>
     </footer>
 
     <transition name="fade">
       <div v-if="checkout.show" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-gr-900/80 backdrop-blur-md" @click="closeCheckout"></div>
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="closeCheckout"></div>
         <div
-          class="bg-gr-800 w-full max-w-md rounded-[2rem] shadow-2xl relative z-10 overflow-hidden border border-white/10">
-          <div class="px-8 pt-8 pb-6 border-b border-white/5 relative">
+          class="bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 overflow-hidden border border-gr-line">
+          <div class="px-8 pt-8 pb-6 border-b border-gr-line relative">
             <button @click="closeCheckout"
-              class="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition">
+              class="absolute top-6 right-6 w-8 h-8 rounded-full bg-gr-wash flex items-center justify-center text-slate-400 hover:text-gr-ink hover:bg-slate-100 transition-colors">
               <i class="fa-solid fa-xmark"></i>
             </button>
             <p class="text-slate-400 text-sm font-medium mb-2">安全结算中心</p>
-            <h3 class="text-xl font-bold text-white leading-tight pr-8">{{ checkout.product.title }}</h3>
+            <h3 class="text-xl font-bold text-gr-ink leading-tight pr-8">{{ checkout.product.title }}</h3>
             <div class="mt-4 flex items-baseline gap-1">
-              <span class="text-3xl font-black text-white">¥{{ checkout.product.price }}</span>
+              <span class="text-3xl font-black text-gr-ink">¥{{ checkout.product.price }}</span>
               <span class="text-slate-400 text-sm">.00</span>
             </div>
           </div>
           <div v-if="checkout.status === 'processing'" class="p-12 text-center">
             <i class="fa-solid fa-circle-notch fa-spin text-4xl text-gr-blue mb-4"></i>
-            <p class="text-white font-medium text-lg">正在安全处理...</p>
+            <p class="text-gr-ink font-medium text-lg">正在安全处理...</p>
             <p class="text-slate-400 text-sm mt-2">请勿关闭当前窗口</p>
           </div>
           <div v-else-if="checkout.status === 'success'" class="p-12 text-center">
-            <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <i class="fa-solid fa-check text-4xl text-green-400"></i>
+            <div class="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i class="fa-solid fa-check text-4xl text-emerald-500"></i>
             </div>
-            <h4 class="text-2xl font-bold text-white mb-2">支付成功</h4>
+            <h4 class="text-2xl font-bold text-gr-ink mb-2">支付成功</h4>
             <p class="text-slate-400 mb-4">订单已同步至系统，稍后将为您继续服务。</p>
             <pre v-if="checkout.orderResult"
-              class="text-left text-xs text-slate-300 bg-gr-900/80 p-3 rounded-xl overflow-auto">{{ JSON.stringify(checkout.orderResult, null, 2) }}</pre>
+              class="text-left text-xs text-slate-500 bg-gr-wash p-3 rounded-lg overflow-auto border border-gr-line">{{ JSON.stringify(checkout.orderResult, null, 2) }}</pre>
             <button @click="closeCheckout"
-              class="w-full mt-4 py-4 rounded-xl bg-gr-blue text-white font-bold transition hover:bg-blue-600">完成</button>
+              class="w-full mt-4 py-3.5 rounded-lg bg-gr-blue text-white font-bold transition-colors hover:bg-blue-600">完成</button>
           </div>
           <div v-else class="p-8">
             <p class="text-sm font-medium text-slate-400 mb-4">选择支付方式</p>
             <div class="space-y-3 mb-8">
               <label
-                class="flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all duration-300"
-                :class="checkout.payMethod === 'wechat' ? 'bg-gr-900 border-green-500/50 shadow-[0_0_15px_rgba(34,197,94,0.1)]' : 'bg-white/5 border-transparent hover:bg-white/10'">
+                class="flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-colors"
+                :class="checkout.payMethod === 'wechat' ? 'bg-emerald-50 border-emerald-300' : 'bg-white border-gr-line hover:bg-gr-wash'">
                 <div class="flex items-center gap-4">
                   <div
-                    class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 text-xl">
+                    class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-xl">
                     <i class="fa-brands fa-weixin"></i>
                   </div>
-                  <span class="font-medium text-white">微信支付</span>
+                  <span class="font-medium text-gr-ink">微信支付</span>
                 </div>
                 <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors"
-                  :class="checkout.payMethod === 'wechat' ? 'border-green-500' : 'border-slate-500'">
-                  <div v-if="checkout.payMethod === 'wechat'" class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                  :class="checkout.payMethod === 'wechat' ? 'border-emerald-500' : 'border-slate-300'">
+                  <div v-if="checkout.payMethod === 'wechat'" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
                 </div>
                 <input type="radio" v-model="checkout.payMethod" value="wechat" class="hidden" />
               </label>
               <label
-                class="flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all duration-300"
-                :class="checkout.payMethod === 'alipay' ? 'bg-gr-900 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.1)]' : 'bg-white/5 border-transparent hover:bg-white/10'">
+                class="flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-colors"
+                :class="checkout.payMethod === 'alipay' ? 'bg-blue-50 border-blue-300' : 'bg-white border-gr-line hover:bg-gr-wash'">
                 <div class="flex items-center gap-4">
                   <div
-                    class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 text-xl">
+                    class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl">
                     <i class="fa-brands fa-alipay"></i>
                   </div>
-                  <span class="font-medium text-white">支付宝</span>
+                  <span class="font-medium text-gr-ink">支付宝</span>
                 </div>
                 <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors"
-                  :class="checkout.payMethod === 'alipay' ? 'border-blue-500' : 'border-slate-500'">
+                  :class="checkout.payMethod === 'alipay' ? 'border-blue-500' : 'border-slate-300'">
                   <div v-if="checkout.payMethod === 'alipay'" class="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
                 </div>
                 <input type="radio" v-model="checkout.payMethod" value="alipay" class="hidden" />
               </label>
             </div>
             <button @click="processPayment"
-              class="w-full py-4 rounded-xl bg-gradient-to-r from-gr-blue to-gr-cyan text-white font-bold text-lg transition shadow-lg hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2">
+              class="w-full py-3.5 rounded-lg bg-gradient-to-r from-gr-blue to-gr-cyan text-white font-bold text-base transition-opacity hover:opacity-90 flex items-center justify-center gap-2">
               <i class="fa-solid fa-lock text-sm"></i> 确认支付 ¥{{ checkout.product.price }}
             </button>
           </div>
@@ -527,10 +507,8 @@
     const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
     createApp({
       setup() {
-        const scrolled = ref(false);
         const recentOrders = ref([]);
         let ordersTimer = null;
-        const handleScroll = () => { scrolled.value = window.scrollY > 20; };
         const loadRecentOrders = async () => {
           try {
             const response = await fetch(apiUrl('/api/orders/list'));
@@ -541,12 +519,10 @@
           }
         };
         onMounted(() => {
-          window.addEventListener('scroll', handleScroll);
           loadRecentOrders();
           ordersTimer = window.setInterval(loadRecentOrders, 5000);
         });
         onUnmounted(() => {
-          window.removeEventListener('scroll', handleScroll);
           if (ordersTimer) {
             clearInterval(ordersTimer);
             ordersTimer = null;
@@ -583,15 +559,15 @@
         const products = [
           { id: 's1', category: 'software', title: '电商小程序全套定制', desc: '基于现代化微服务架构，包含商城、营销裂变与支付闭环，100%源码级交付。', icon: 'fa-mobile-screen', color: 'text-gr-cyan', tags: ['微信生态', '源码交付', '容器化'], price: 4000, buyable: true },
           { id: 's2', category: 'software', title: 'DevOps 与云原生架构托管', desc: 'Docker 容器化部署、Linux 环境搭建及服务器全生命周期维护。', icon: 'fa-server', color: 'text-gr-blue', tags: ['Docker', 'Nginx', '高可用'], price: null, buyable: false },
-          { id: 's3', category: 'software', title: 'AI 私有化及企业内部系统', desc: '构建本地 vLLM 大模型知识库，及企业定制化 EHS 质检审批流系统。', icon: 'fa-brain', color: 'text-purple-400', tags: ['信息化流转', '安全质检'], price: null, buyable: false },
-          { id: 'sec1', category: 'security', title: '安防监控与智能门禁布线', desc: '针对厂区、办公楼提供高清视频监控、门禁考勤与防盗报警系统规划与施工。', icon: 'fa-video', color: 'text-green-400', tags: ['现场勘测', '综合布线'], price: 500, priceLabel: '定金/勘测费', buyable: true },
-          { id: 'sec2', category: 'security', title: '标准化安防硬件采购', desc: '品牌网络摄像机、硬盘录像机、交换机及周边耗材直供。', icon: 'fa-box', color: 'text-orange-400', tags: ['现货发售', '硬件质保'], price: null, buyable: false },
-          { id: 'net1', category: 'network', title: '企业级专网与 VPN 方案', desc: '构建跨区域安全网络互联，实现异地办公数据加密传输及内网穿透。', icon: 'fa-network-wired', color: 'text-indigo-400', tags: ['数据加密', '稳定高速'], price: null, buyable: false },
-          { id: 'net2', category: 'network', title: 'Office 365 商业版订阅', desc: '提供正版 Office 365 账号授权，涵盖 Word、Excel 及云端协作工具。', icon: 'fa-microsoft', color: 'text-blue-500', tags: ['虚拟发货', '自动激活'], price: 399, buyable: true },
-          { id: 'net3', category: 'network', title: '边缘计算与防护 (EdgeOne/CF)', desc: '配置 Cloudflare 或腾讯云 EdgeOne，提供 CDN 加速与 WAF 安全防护。', icon: 'fa-bolt', color: 'text-yellow-400', tags: ['防御清洗', '网站加速'], price: null, buyable: false },
+          { id: 's3', category: 'software', title: 'AI 私有化及企业内部系统', desc: '构建本地 vLLM 大模型知识库，及企业定制化 EHS 质检审批流系统。', icon: 'fa-brain', color: 'text-purple-500', tags: ['信息化流转', '安全质检'], price: null, buyable: false },
+          { id: 'sec1', category: 'security', title: '安防监控与智能门禁布线', desc: '针对厂区、办公楼提供高清视频监控、门禁考勤与防盗报警系统规划与施工。', icon: 'fa-video', color: 'text-emerald-500', tags: ['现场勘测', '综合布线'], price: 500, priceLabel: '定金/勘测费', buyable: true },
+          { id: 'sec2', category: 'security', title: '标准化安防硬件采购', desc: '品牌网络摄像机、硬盘录像机、交换机及周边耗材直供。', icon: 'fa-box', color: 'text-orange-500', tags: ['现货发售', '硬件质保'], price: null, buyable: false },
+          { id: 'net1', category: 'network', title: '企业级专网与 VPN 方案', desc: '构建跨区域安全网络互联，实现异地办公数据加密传输及内网穿透。', icon: 'fa-network-wired', color: 'text-indigo-500', tags: ['数据加密', '稳定高速'], price: null, buyable: false },
+          { id: 'net2', category: 'network', title: 'Office 365 商业版订阅', desc: '提供正版 Office 365 账号授权，涵盖 Word、Excel 及云端协作工具。', icon: 'fa-microsoft', color: 'text-blue-600', tags: ['虚拟发货', '自动激活'], price: 399, buyable: true },
+          { id: 'net3', category: 'network', title: '边缘计算与防护 (EdgeOne/CF)', desc: '配置 Cloudflare 或腾讯云 EdgeOne，提供 CDN 加速与 WAF 安全防护。', icon: 'fa-bolt', color: 'text-amber-500', tags: ['防御清洗', '网站加速'], price: null, buyable: false },
           { id: 'chem1', category: 'chemical', title: '红磷阻燃剂及衍生产品', desc: '批零兼营工业级红磷阻燃材料，支持大宗采购，出具完整质检报告。', icon: 'fa-fire-extinguisher', color: 'text-red-500', tags: ['大宗物料', '阶梯定价', '出厂质检'], price: null, buyable: false },
-          { id: 'chem2', category: 'chemical', title: '工业安全与排风工程咨询', desc: '针对化工生产提供防腐排风管网设计、粉尘控制及 EHS 环保达标方案。', icon: 'fa-wind', color: 'text-teal-400', tags: ['环保工程', '安全合规'], price: null, buyable: false },
-          { id: 'ret1', category: 'retail', title: '光润严选 - 员工福利与鞋服', desc: '品牌鞋服、日用百货代销，支持企业集中采购及员工福利代发。', icon: 'fa-shirt', color: 'text-pink-400', tags: ['生活百货', '快递包邮'], price: null, buyable: false, priceLabel: '前往商城选购' }
+          { id: 'chem2', category: 'chemical', title: '工业安全与排风工程咨询', desc: '针对化工生产提供防腐排风管网设计、粉尘控制及 EHS 环保达标方案。', icon: 'fa-wind', color: 'text-teal-500', tags: ['环保工程', '安全合规'], price: null, buyable: false },
+          { id: 'ret1', category: 'retail', title: '光润严选 - 员工福利与鞋服', desc: '品牌鞋服、日用百货代销，支持企业集中采购及员工福利代发。', icon: 'fa-shirt', color: 'text-pink-500', tags: ['生活百货', '快递包邮'], price: null, buyable: false, priceLabel: '前往商城选购' }
         ];
         const currentProducts = computed(() => products.filter(p => p.category === activeTab.value));
         const checkout = ref({ show: false, status: 'select', payMethod: 'wechat', product: {}, orderResult: null });
@@ -668,7 +644,7 @@
           }
         };
 
-        return { scrolled, recentOrders, newsCategories, activeNewsCategory, currentNews, categories, activeTab, currentProducts, checkout, openCheckout, closeCheckout, processPayment };
+        return { recentOrders, newsCategories, activeNewsCategory, currentNews, categories, activeTab, currentProducts, checkout, openCheckout, closeCheckout, processPayment };
       }
     }).mount('#app');
   </script>

@@ -9,42 +9,57 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
             gr: {
-              900: '#0B1121',
-              800: '#151E32',
               blue: '#3B82F6',
-              cyan: '#06B6D4'
+              cyan: '#06B6D4',
+              ink: '#0F172A',
+              sub: '#64748B',
+              line: '#E5E9F0',
+              wash: '#F7F8FA'
             }
           }
         }
       }
     };
   </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #E5E9F0;
+    }
+
+    .tnum {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
 </head>
 
-<body class="bg-slate-950 text-slate-200 min-h-screen">
+<body class="bg-gr-wash text-slate-700 min-h-screen">
   <div id="app" class="max-w-6xl mx-auto p-6">
     <div class="flex flex-col gap-4 md:flex-row md:justify-between md:items-center mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-white">订单管理后台</h1>
-        <p class="text-slate-400">查看订单状态、支付方式与支付结果</p>
-        <p class="text-xs text-slate-500 mt-1">最后同步：{{ lastUpdated || '尚未同步' }}</p>
+        <h1 class="text-2xl font-bold text-gr-ink">订单管理后台</h1>
+        <p class="text-gr-sub">查看订单状态、支付方式与支付结果</p>
+        <p class="text-xs text-slate-400 mt-1">最后同步：{{ lastUpdated || '尚未同步' }}</p>
       </div>
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="flex flex-wrap items-center gap-2.5">
         <input v-model="searchTerm" type="text" placeholder="搜索订单号 / 商品名称"
-          class="rounded-full border border-slate-700 bg-slate-900 px-4 py-2 text-sm text-slate-200 outline-none focus:border-gr-cyan" />
+          class="rounded-full border border-gr-line bg-white px-4 py-2 text-sm text-gr-ink outline-none focus:border-gr-blue" />
         <select v-model="methodFilter"
-          class="rounded-full border border-slate-700 bg-slate-900 px-4 py-2 text-sm text-slate-200 outline-none focus:border-gr-cyan">
+          class="rounded-full border border-gr-line bg-white px-4 py-2 text-sm text-gr-ink outline-none focus:border-gr-blue">
           <option value="all">全部支付方式</option>
           <option value="wechat">微信支付</option>
           <option value="alipay">支付宝</option>
         </select>
         <select v-model="channelFilter"
-          class="rounded-full border border-slate-700 bg-slate-900 px-4 py-2 text-sm text-slate-200 outline-none focus:border-gr-cyan">
+          class="rounded-full border border-gr-line bg-white px-4 py-2 text-sm text-gr-ink outline-none focus:border-gr-blue">
           <option value="all">全部渠道</option>
           <option value="wechat">wechat</option>
           <option value="alipay">alipay</option>
@@ -52,205 +67,207 @@
           <option value="h5">h5</option>
         </select>
         <input v-model="startDate" type="date"
-          class="rounded-full border border-slate-700 bg-slate-900 px-4 py-2 text-sm text-slate-200 outline-none focus:border-gr-cyan" />
+          class="rounded-full border border-gr-line bg-white px-4 py-2 text-sm text-gr-ink outline-none focus:border-gr-blue" />
         <input v-model="endDate" type="date"
-          class="rounded-full border border-slate-700 bg-slate-900 px-4 py-2 text-sm text-slate-200 outline-none focus:border-gr-cyan" />
+          class="rounded-full border border-gr-line bg-white px-4 py-2 text-sm text-gr-ink outline-none focus:border-gr-blue" />
         <button @click="loadOrders"
-          class="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-gr-cyan hover:text-white">立即刷新</button>
+          class="rounded-full border border-gr-line px-4 py-2 text-sm text-gr-ink hover:border-gr-blue transition-colors">立即刷新</button>
         <button @click="exportCsv"
-          class="rounded-full bg-gr-cyan px-4 py-2 text-sm font-medium text-slate-900 hover:opacity-90">导出 CSV</button>
+          class="rounded-full bg-gr-blue px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 transition-colors">导出 CSV</button>
         <button @click="clearFilters"
-          class="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-slate-500">清空筛选</button>
-        <a href="/refund.html" class="text-gr-cyan">退款 & 对账</a>
-        <a href="/" class="text-gr-cyan">返回首页</a>
+          class="rounded-full border border-gr-line px-4 py-2 text-sm text-gr-ink hover:border-slate-400 transition-colors">清空筛选</button>
+        <a href="/refund.html" class="text-gr-blue text-sm">退款 & 对账</a>
+        <a href="/" class="text-gr-blue text-sm">返回首页</a>
       </div>
     </div>
 
     <div class="grid gap-4 md:grid-cols-4 mb-6">
-      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800">
-        <p class="text-slate-400 text-sm">总订单数</p>
-        <p class="text-2xl font-bold text-white">{{ orders.length }}</p>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm">总订单数</p>
+        <p class="text-2xl font-bold text-gr-ink mt-1 tnum">{{ orders.length }}</p>
       </div>
-      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800">
-        <p class="text-slate-400 text-sm">已支付</p>
-        <p class="text-2xl font-bold text-green-400">{{ paidCount }}</p>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm">已支付</p>
+        <p class="text-2xl font-bold text-emerald-600 mt-1 tnum">{{ paidCount }}</p>
       </div>
-      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800">
-        <p class="text-slate-400 text-sm">待支付</p>
-        <p class="text-2xl font-bold text-yellow-400">{{ pendingCount }}</p>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm">待支付</p>
+        <p class="text-2xl font-bold text-amber-600 mt-1 tnum">{{ pendingCount }}</p>
       </div>
-      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800">
-        <p class="text-slate-400 text-sm">已收金额</p>
-        <p class="text-2xl font-bold text-gr-cyan">¥{{ paidRevenue.toFixed(2) }}</p>
+      <div class="card rounded-xl p-4">
+        <p class="text-gr-sub text-sm">已收金额</p>
+        <p class="text-2xl font-bold text-gr-blue mt-1 tnum">¥{{ paidRevenue.toFixed(2) }}</p>
       </div>
     </div>
 
     <div class="mb-6 grid gap-4 md:grid-cols-2">
-      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
+      <div class="card rounded-xl p-4">
         <div class="flex items-center justify-between mb-3">
-          <p class="text-sm text-slate-400">渠道收入分布</p>
-          <span class="text-xs text-slate-500">按已支付订单</span>
+          <p class="text-sm text-gr-sub">渠道收入分布</p>
+          <span class="text-xs text-slate-400">按已支付订单</span>
         </div>
         <div class="space-y-3">
           <div v-for="item in channelBreakdown" :key="item.name" class="space-y-1">
-            <div class="flex justify-between text-xs text-slate-300">
+            <div class="flex justify-between text-xs text-slate-600">
               <span>{{ item.label }}</span>
-              <span>{{ item.count }} 笔 / ¥{{ item.amount.toFixed(2) }}</span>
+              <span class="tnum">{{ item.count }} 笔 / ¥{{ item.amount.toFixed(2) }}</span>
             </div>
-            <div class="h-2 rounded-full bg-slate-800 overflow-hidden">
+            <div class="h-2 rounded-full bg-gr-wash overflow-hidden">
               <div :style="{ width: item.percent + '%' }"
                 class="h-full rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan"></div>
             </div>
           </div>
         </div>
       </div>
-      <div class="bg-slate-900 rounded-2xl border border-slate-800 p-4">
+      <div class="card rounded-xl p-4">
         <div class="flex items-center justify-between mb-3">
-          <p class="text-sm text-slate-400">筛选结果概览</p>
-          <span class="text-xs text-slate-500">当前视图</span>
+          <p class="text-sm text-gr-sub">筛选结果概览</p>
+          <span class="text-xs text-slate-400">当前视图</span>
         </div>
         <div class="grid grid-cols-2 gap-3 text-sm">
-          <div class="rounded-xl bg-slate-800 p-3">
-            <p class="text-slate-400">订单数</p>
-            <p class="text-xl font-bold text-white mt-1">{{ filteredOrders.length }}</p>
+          <div class="rounded-lg bg-gr-wash p-3">
+            <p class="text-gr-sub">订单数</p>
+            <p class="text-xl font-bold text-gr-ink mt-1 tnum">{{ filteredOrders.length }}</p>
           </div>
-          <div class="rounded-xl bg-slate-800 p-3">
-            <p class="text-slate-400">金额合计</p>
-            <p class="text-xl font-bold text-white mt-1">¥{{ filteredRevenue.toFixed(2) }}</p>
+          <div class="rounded-lg bg-gr-wash p-3">
+            <p class="text-gr-sub">金额合计</p>
+            <p class="text-xl font-bold text-gr-ink mt-1 tnum">¥{{ filteredRevenue.toFixed(2) }}</p>
           </div>
-          <div class="rounded-xl bg-slate-800 p-3">
-            <p class="text-slate-400">已支付</p>
-            <p class="text-xl font-bold text-green-400 mt-1">{{ filteredPaid }}</p>
+          <div class="rounded-lg bg-gr-wash p-3">
+            <p class="text-gr-sub">已支付</p>
+            <p class="text-xl font-bold text-emerald-600 mt-1 tnum">{{ filteredPaid }}</p>
           </div>
-          <div class="rounded-xl bg-slate-800 p-3">
-            <p class="text-slate-400">待支付</p>
-            <p class="text-xl font-bold text-yellow-400 mt-1">{{ filteredPending }}</p>
+          <div class="rounded-lg bg-gr-wash p-3">
+            <p class="text-gr-sub">待支付</p>
+            <p class="text-xl font-bold text-amber-600 mt-1 tnum">{{ filteredPending }}</p>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="flex flex-wrap gap-3 mb-4">
+    <div class="flex flex-wrap gap-2.5 mb-4">
       <button @click="statusFilter = 'all'"
-        :class="statusFilter === 'all' ? 'bg-gr-cyan text-slate-900' : 'bg-slate-900 text-slate-300 border border-slate-800'"
-        class="rounded-full px-4 py-2 text-sm font-medium">全部</button>
+        :class="statusFilter === 'all' ? 'bg-gr-ink text-white border-gr-ink' : 'bg-white text-slate-600 border-gr-line'"
+        class="rounded-full px-4 py-2 text-sm font-medium border transition-colors">全部</button>
       <button @click="statusFilter = 'paid'"
-        :class="statusFilter === 'paid' ? 'bg-green-500/20 text-green-400 border border-green-500/40' : 'bg-slate-900 text-slate-300 border border-slate-800'"
-        class="rounded-full px-4 py-2 text-sm font-medium">已支付</button>
+        :class="statusFilter === 'paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-white text-slate-600 border-gr-line'"
+        class="rounded-full px-4 py-2 text-sm font-medium border transition-colors">已支付</button>
       <button @click="statusFilter = 'pending'"
-        :class="statusFilter === 'pending' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/40' : 'bg-slate-900 text-slate-300 border border-slate-800'"
-        class="rounded-full px-4 py-2 text-sm font-medium">待支付</button>
+        :class="statusFilter === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-300' : 'bg-white text-slate-600 border-gr-line'"
+        class="rounded-full px-4 py-2 text-sm font-medium border transition-colors">待支付</button>
     </div>
 
-    <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
-      <div class="border-b border-slate-800 px-4 py-3 text-sm text-slate-400">支持按订单号或商品名称检索，结果会实时过滤。</div>
-      <table class="min-w-full text-sm">
-        <thead class="bg-slate-800 text-slate-300">
-          <tr>
-            <th class="px-4 py-3 text-left">订单号</th>
-            <th class="px-4 py-3 text-left">商品</th>
-            <th class="px-4 py-3 text-left">金额</th>
-            <th class="px-4 py-3 text-left">支付方式</th>
-            <th class="px-4 py-3 text-left">渠道</th>
-            <th class="px-4 py-3 text-left">创建时间</th>
-            <th class="px-4 py-3 text-left">状态</th>
-            <th class="px-4 py-3 text-left">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="filteredOrders.length === 0" class="border-t border-slate-800">
-            <td colspan="8" class="px-4 py-6 text-center text-slate-400">没有匹配的订单记录</td>
-          </tr>
-          <tr v-for="order in filteredOrders" :key="order.order_id" class="border-t border-slate-800">
-            <td class="px-4 py-3 font-mono text-slate-200">{{ order.order_id }}</td>
-            <td class="px-4 py-3">{{ order.title }}</td>
-            <td class="px-4 py-3">¥{{ order.amount }}</td>
-            <td class="px-4 py-3">{{ order.pay_method }}</td>
-            <td class="px-4 py-3">{{ order.channel || '未记录' }}</td>
-            <td class="px-4 py-3">{{ order.created_at }}</td>
-            <td class="px-4 py-3">
-              <span v-if="order.pay_status === 1" class="text-green-400">已支付</span>
-              <span v-else class="text-yellow-400">待支付</span>
-            </td>
-            <td class="px-4 py-3">
-              <button @click="openDetail(order)" class="text-gr-cyan hover:text-white">查看详情</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="card rounded-xl overflow-hidden">
+      <div class="border-b border-gr-line px-4 py-3 text-sm text-gr-sub">支持按订单号或商品名称检索，结果会实时过滤。</div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-gr-wash text-slate-500">
+            <tr>
+              <th class="px-4 py-3 text-left font-medium">订单号</th>
+              <th class="px-4 py-3 text-left font-medium">商品</th>
+              <th class="px-4 py-3 text-left font-medium">金额</th>
+              <th class="px-4 py-3 text-left font-medium">支付方式</th>
+              <th class="px-4 py-3 text-left font-medium">渠道</th>
+              <th class="px-4 py-3 text-left font-medium">创建时间</th>
+              <th class="px-4 py-3 text-left font-medium">状态</th>
+              <th class="px-4 py-3 text-left font-medium">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="filteredOrders.length === 0" class="border-t border-gr-line">
+              <td colspan="8" class="px-4 py-6 text-center text-gr-sub">没有匹配的订单记录</td>
+            </tr>
+            <tr v-for="order in filteredOrders" :key="order.order_id" class="border-t border-gr-line hover:bg-gr-wash/60 transition-colors">
+              <td class="px-4 py-3 font-mono text-gr-ink">{{ order.order_id }}</td>
+              <td class="px-4 py-3">{{ order.title }}</td>
+              <td class="px-4 py-3 tnum">¥{{ order.amount }}</td>
+              <td class="px-4 py-3">{{ order.pay_method }}</td>
+              <td class="px-4 py-3">{{ order.channel || '未记录' }}</td>
+              <td class="px-4 py-3 tnum">{{ order.created_at }}</td>
+              <td class="px-4 py-3">
+                <span v-if="order.pay_status === 1" class="text-emerald-600 bg-emerald-50 rounded px-2 py-0.5 text-xs font-medium">已支付</span>
+                <span v-else class="text-amber-600 bg-amber-50 rounded px-2 py-0.5 text-xs font-medium">待支付</span>
+              </td>
+              <td class="px-4 py-3">
+                <button @click="openDetail(order)" class="text-gr-blue hover:text-blue-700 transition-colors">查看详情</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div v-if="showDetail" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
-      <div class="w-full max-w-2xl rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
+    <div v-if="showDetail" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center px-4">
+      <div class="w-full max-w-2xl rounded-2xl border border-gr-line bg-white p-6 shadow-2xl">
         <div class="flex items-center justify-between mb-4">
           <div>
-            <h2 class="text-xl font-semibold text-white">订单详情</h2>
-            <p class="text-sm text-slate-400">查看订单的支付状态和时间线信息</p>
+            <h2 class="text-xl font-semibold text-gr-ink">订单详情</h2>
+            <p class="text-sm text-gr-sub">查看订单的支付状态和时间线信息</p>
           </div>
           <button @click="showDetail = false"
-            class="rounded-full border border-slate-700 px-3 py-1 text-sm text-slate-300">关闭</button>
+            class="rounded-full border border-gr-line px-3 py-1 text-sm text-slate-600 hover:border-slate-400 transition-colors">关闭</button>
         </div>
 
-        <div v-if="detailLoading" class="py-10 text-center text-slate-400">加载中...</div>
+        <div v-if="detailLoading" class="py-10 text-center text-gr-sub">加载中...</div>
         <div v-else-if="selectedOrder" class="space-y-4">
-          <div class="rounded-2xl border border-slate-800 bg-slate-800/60 p-4">
+          <div class="rounded-xl border border-gr-line bg-gr-wash p-4">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-slate-400">订单号</p>
-                <p class="font-mono text-white">{{ selectedOrder.order_id }}</p>
+                <p class="text-sm text-gr-sub">订单号</p>
+                <p class="font-mono text-gr-ink">{{ selectedOrder.order_id }}</p>
               </div>
               <span
-                :class="selectedOrder.is_paid ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'"
+                :class="selectedOrder.is_paid ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
                 class="rounded-full px-3 py-1 text-sm">
                 {{ selectedOrder.status_text }}
               </span>
             </div>
           </div>
           <div class="grid gap-4 md:grid-cols-2">
-            <div class="rounded-2xl border border-slate-800 bg-slate-800/40 p-4">
-              <p class="text-sm text-slate-400">商品名称</p>
-              <p class="mt-1 text-white">{{ selectedOrder.title }}</p>
+            <div class="rounded-xl border border-gr-line bg-gr-wash p-4">
+              <p class="text-sm text-gr-sub">商品名称</p>
+              <p class="mt-1 text-gr-ink">{{ selectedOrder.title }}</p>
             </div>
-            <div class="rounded-2xl border border-slate-800 bg-slate-800/40 p-4">
-              <p class="text-sm text-slate-400">支付金额</p>
-              <p class="mt-1 text-white">¥{{ selectedOrder.amount }}</p>
+            <div class="rounded-xl border border-gr-line bg-gr-wash p-4">
+              <p class="text-sm text-gr-sub">支付金额</p>
+              <p class="mt-1 text-gr-ink">¥{{ selectedOrder.amount }}</p>
             </div>
-            <div class="rounded-2xl border border-slate-800 bg-slate-800/40 p-4">
-              <p class="text-sm text-slate-400">支付方式</p>
-              <p class="mt-1 text-white">{{ selectedOrder.pay_method }}</p>
+            <div class="rounded-xl border border-gr-line bg-gr-wash p-4">
+              <p class="text-sm text-gr-sub">支付方式</p>
+              <p class="mt-1 text-gr-ink">{{ selectedOrder.pay_method }}</p>
             </div>
-            <div class="rounded-2xl border border-slate-800 bg-slate-800/40 p-4">
-              <p class="text-sm text-slate-400">支付渠道</p>
-              <p class="mt-1 text-white">{{ selectedOrder.channel || '未记录' }}</p>
+            <div class="rounded-xl border border-gr-line bg-gr-wash p-4">
+              <p class="text-sm text-gr-sub">支付渠道</p>
+              <p class="mt-1 text-gr-ink">{{ selectedOrder.channel || '未记录' }}</p>
             </div>
           </div>
-          <div class="rounded-2xl border border-slate-800 bg-slate-800/40 p-4 text-sm text-slate-300">
-            <p><span class="text-slate-400">创建时间：</span>{{ selectedOrder.created_at }}</p>
-            <p class="mt-2"><span class="text-slate-400">支付时间：</span>{{ selectedOrder.paid_at || '尚未支付' }}</p>
+          <div class="rounded-xl border border-gr-line bg-gr-wash p-4 text-sm text-slate-600">
+            <p><span class="text-gr-sub">创建时间：</span>{{ selectedOrder.created_at }}</p>
+            <p class="mt-2"><span class="text-gr-sub">支付时间：</span>{{ selectedOrder.paid_at || '尚未支付' }}</p>
           </div>
-          <div class="rounded-2xl border border-slate-800 bg-slate-800/40 p-4">
-            <p class="text-sm text-slate-400 mb-3">订单进度</p>
+          <div class="rounded-xl border border-gr-line bg-gr-wash p-4">
+            <p class="text-sm text-gr-sub mb-3">订单进度</p>
             <div class="space-y-3">
               <div class="flex items-start gap-3">
-                <div class="mt-1 h-2.5 w-2.5 rounded-full bg-gr-cyan"></div>
+                <div class="mt-1 h-2.5 w-2.5 rounded-full bg-gr-blue"></div>
                 <div>
-                  <p class="text-white">订单已创建</p>
-                  <p class="text-xs text-slate-400">{{ selectedOrder.created_at }}</p>
+                  <p class="text-gr-ink">订单已创建</p>
+                  <p class="text-xs text-gr-sub">{{ selectedOrder.created_at }}</p>
                 </div>
               </div>
               <div class="flex items-start gap-3">
-                <div :class="selectedOrder.is_paid ? 'bg-green-400' : 'bg-slate-600'"
+                <div :class="selectedOrder.is_paid ? 'bg-emerald-500' : 'bg-slate-300'"
                   class="mt-1 h-2.5 w-2.5 rounded-full"></div>
                 <div>
-                  <p class="text-white">{{ selectedOrder.is_paid ? '支付回调已完成' : '等待支付回调' }}</p>
-                  <p class="text-xs text-slate-400">{{ selectedOrder.paid_at || '尚未收到支付回调' }}</p>
+                  <p class="text-gr-ink">{{ selectedOrder.is_paid ? '支付回调已完成' : '等待支付回调' }}</p>
+                  <p class="text-xs text-gr-sub">{{ selectedOrder.paid_at || '尚未收到支付回调' }}</p>
                 </div>
               </div>
             </div>
           </div>
           <div v-if="selectedOrder && selectedOrder.is_paid" class="flex justify-end">
             <button @click="issueRefund(selectedOrder)"
-              class="rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan px-4 py-2 text-sm font-medium text-white">发起退款审核</button>
+              class="rounded-full bg-gradient-to-r from-gr-blue to-gr-cyan px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity">发起退款审核</button>
           </div>
         </div>
       </div>
