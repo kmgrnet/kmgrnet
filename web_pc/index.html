@@ -98,9 +98,9 @@
     </nav>
 
     <header id="hero" class="relative border-b border-gr-line overflow-hidden">
-      <img src="/images/brand/storefront.jpg" alt="昆明光润网络科技有限公司门店"
-        class="absolute inset-0 w-full h-full object-cover object-[85%_60%]" />
-      <div class="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/70 to-slate-900/25"></div>
+      <img src="/images/brand/mt.png" alt="昆明光润网络科技有限公司门店招牌"
+        class="absolute inset-0 w-full h-full object-cover object-[60%_50%]" />
+      <div class="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/65 to-slate-900/30"></div>
       <div class="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-gr-cyan/10 rounded-full blur-[100px]"></div>
       <div class="max-w-7xl mx-auto px-6 py-10 md:py-14 relative z-10">
         <div class="flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
@@ -375,8 +375,8 @@
     </section>
 
     <section id="contact" class="py-14">
-      <div class="max-w-7xl mx-auto px-6 grid gap-5 md:grid-cols-2">
-        <div class="card rounded-xl p-8">
+      <div class="max-w-7xl mx-auto px-6 grid gap-5 md:grid-cols-3">
+        <div class="card rounded-xl p-8 md:col-span-2">
           <p class="text-gr-blue text-sm font-semibold uppercase tracking-[0.2em]">合作咨询</p>
           <h3 class="text-xl font-bold text-gr-ink mt-3">欢迎与我们洽谈数字化转型与实体产业合作</h3>
           <p class="text-gr-sub mt-4">我们提供从品牌门户、商城结算系统、云部署到安防工程与工业物料供应的跨界方案。</p>
@@ -394,18 +394,38 @@
               <p class="mt-2 text-gr-ink font-medium">按需推进</p>
             </div>
           </div>
-        </div>
-        <div class="card rounded-xl p-8">
-          <p class="text-gr-sub">联系电话</p>
-          <p class="text-2xl font-bold text-gr-ink mt-2">138-8888-8888</p>
-          <p class="text-gr-sub mt-4">邮箱：service@kmgrnet.com</p>
           <div class="mt-6 flex flex-wrap gap-2 text-xs text-slate-500">
             <span class="px-3 py-1 rounded-full border border-gr-line bg-gr-wash">数字化转型</span>
             <span class="px-3 py-1 rounded-full border border-gr-line bg-gr-wash">工程施工</span>
             <span class="px-3 py-1 rounded-full border border-gr-line bg-gr-wash">产业链赋能</span>
           </div>
+        </div>
+        <div class="card rounded-xl p-8">
+          <p class="text-gr-sub">联系电话</p>
+          <p class="text-2xl font-bold text-gr-ink mt-2">138-8888-8888</p>
+          <p class="text-gr-sub mt-4">邮箱：service@kmgrnet.com</p>
           <div class="mt-6 rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-600">
             我们支持需求沟通、方案评估、落地实施与后续运营维护，帮助企业持续增长。
+          </div>
+        </div>
+      </div>
+      <div class="max-w-7xl mx-auto px-6 mt-5">
+        <div class="card rounded-xl p-8">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+            <div>
+              <p class="text-gr-blue text-sm font-semibold uppercase tracking-[0.2em]">门店导航</p>
+              <h3 class="text-lg font-bold text-gr-ink mt-2 flex items-center gap-2">
+                <i class="fa-solid fa-location-dot text-gr-blue"></i> 云南省昆明市晋宁区二街镇昆明光润网络科技有限公司</h3>
+              <p class="text-gr-sub mt-2 text-sm">欢迎到店咨询选购，也可点击右侧按钮一键打开地图导航。</p>
+            </div>
+            <div class="flex flex-wrap gap-3 shrink-0">
+              <a :href="amapUrl" target="_blank" rel="noopener"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gr-blue hover:bg-blue-600 text-white text-sm font-medium transition-colors">
+                <i class="fa-solid fa-diamond-turn-right"></i> 高德地图导航</a>
+              <a :href="baiduMapUrl" target="_blank" rel="noopener"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-gr-line text-gr-ink hover:border-slate-400 text-sm font-medium transition-colors">
+                <i class="fa-solid fa-map-location-dot"></i> 百度地图导航</a>
+            </div>
           </div>
         </div>
       </div>
@@ -511,6 +531,10 @@
     const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
     createApp({
       setup() {
+        const storeAddress = '云南省昆明市晋宁区二街镇昆明光润网络科技有限公司';
+        const amapUrl = `https://www.amap.com/search?query=${encodeURIComponent(storeAddress)}`;
+        const baiduMapUrl = `https://map.baidu.com/search/${encodeURIComponent(storeAddress)}`;
+
         const recentOrders = ref([]);
         let ordersTimer = null;
         const loadRecentOrders = async () => {
@@ -648,7 +672,7 @@
           }
         };
 
-        return { recentOrders, newsCategories, activeNewsCategory, currentNews, categories, activeTab, currentProducts, checkout, openCheckout, closeCheckout, processPayment };
+        return { recentOrders, newsCategories, activeNewsCategory, currentNews, categories, activeTab, currentProducts, checkout, openCheckout, closeCheckout, processPayment, amapUrl, baiduMapUrl };
       }
     }).mount('#app');
   </script>
