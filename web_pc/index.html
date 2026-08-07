@@ -101,6 +101,7 @@
         </div>
         <div class="hidden md:flex space-x-8 text-sm font-medium">
           <a href="#hero" class="hover:text-white transition">首页</a>
+          <a href="#news" class="hover:text-white transition">资讯中心</a>
           <a href="#matrix" class="hover:text-white transition">业务矩阵</a>
           <a href="/company.html" class="hover:text-white transition">公司风采</a>
           <a href="/admin.html" class="hover:text-white transition">订单后台</a>
@@ -139,6 +140,42 @@
         </div>
       </div>
     </header>
+
+    <section id="news" class="py-16 relative z-10 bg-white">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-8 gap-4">
+          <div>
+            <p class="text-gr-blue text-sm font-semibold uppercase tracking-[0.2em]">资讯中心</p>
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">公司与行业最新动态</h2>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button v-for="cat in newsCategories" :key="cat.id" @click="activeNewsCategory = cat.id"
+              class="px-4 py-2 rounded-full text-sm font-medium transition-colors border"
+              :class="activeNewsCategory === cat.id ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'">
+              {{ cat.name }}
+            </button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <a v-for="item in currentNews" :key="item.id" :href="item.href || '#'"
+            class="group block rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 bg-white">
+            <div class="aspect-[16/9] bg-slate-100 flex items-center justify-center text-slate-300 overflow-hidden">
+              <i :class="['fa-solid', item.icon]" class="text-4xl"></i>
+            </div>
+            <div class="p-5">
+              <span class="inline-block text-xs font-semibold text-gr-blue bg-blue-50 rounded-full px-3 py-1">{{ item.tag }}</span>
+              <h3 class="mt-3 text-lg font-bold text-slate-900 leading-snug group-hover:text-gr-blue transition-colors">{{ item.title }}</h3>
+              <p class="mt-2 text-sm text-slate-500 leading-relaxed line-clamp-2">{{ item.summary }}</p>
+              <div class="mt-4 flex items-center justify-between text-xs text-slate-400">
+                <span>{{ item.source }}</span>
+                <span>{{ item.date }}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div v-if="!currentNews.length" class="text-center text-slate-400 py-16">该分类下暂无内容，敬请期待。</div>
+      </div>
+    </section>
 
     <section class="py-6 relative z-10">
       <div class="max-w-7xl mx-auto px-6">
@@ -516,6 +553,25 @@
           }
         });
 
+        const newsCategories = [
+          { id: 'company', name: '公司新闻' },
+          { id: 'industry', name: '行业动态' },
+          { id: 'product', name: '产品更新' },
+          { id: 'case', name: '客户案例' }
+        ];
+        const activeNewsCategory = ref('company');
+        const newsItems = [
+          { id: 'n1', category: 'company', tag: '公司新闻', icon: 'fa-building', title: '光润网络完成新一轮团队扩编，新增云原生交付小组', summary: '为承接更多企业级 DevOps 与云部署项目，公司组建专职云原生交付团队，进一步提升响应效率。', source: '光润网络', date: '2026-08-01' },
+          { id: 'n2', category: 'company', tag: '公司新闻', icon: 'fa-handshake', title: '光润网络与本地制造业客户达成安防工程战略合作', summary: '双方将在厂区安防布线、智能门禁等场景展开长期合作，首批项目已进入勘测阶段。', source: '光润网络', date: '2026-07-20' },
+          { id: 'n3', category: 'industry', tag: '行业动态', icon: 'fa-chart-line', title: '2026 年中小企业数字化转型投入持续增长', summary: '行业报告显示，中小企业在官网商城、私有化部署等方向的预算同比提升明显。', source: '行业观察', date: '2026-07-15' },
+          { id: 'n4', category: 'industry', tag: '行业动态', icon: 'fa-shield-halved', title: '工业安防合规要求趋严，企业加快弱电系统升级', summary: '多地陆续出台厂区安防新规，带动监控与门禁系统的更新需求。', source: '行业观察', date: '2026-07-05' },
+          { id: 'n5', category: 'product', tag: '产品更新', icon: 'fa-rocket', title: '电商小程序全套定制新增营销裂变模块', summary: '新版本支持拼团、分销等营销组件，帮助商家快速搭建私域增长闭环。', source: '产品团队', date: '2026-08-03' },
+          { id: 'n6', category: 'product', tag: '产品更新', icon: 'fa-cloud', title: '云原生托管服务接入自动化备份与告警', summary: '容器化部署方案现已支持定时备份与异常自动告警，进一步保障业务稳定性。', source: '产品团队', date: '2026-07-28' },
+          { id: 'n7', category: 'case', tag: '客户案例', icon: 'fa-store', title: '某连锁品牌通过官网商城系统实现线上转化提升 3.2 倍', summary: '通过统一门户、在线客服与订单闭环建设，客户线上询单转化效率大幅提升。', source: '客户案例', date: '2026-06-30' },
+          { id: 'n8', category: 'case', tag: '客户案例', icon: 'fa-industry', title: '某制造企业安防系统改造后运营稳定性达 99.9%', summary: '通过监控、门禁与告警系统的统一规划实施，客户厂区安全事故显著下降。', source: '客户案例', date: '2026-06-18' }
+        ];
+        const currentNews = computed(() => newsItems.filter(n => n.category === activeNewsCategory.value));
+
         const categories = [
           { id: 'software', name: '软件与信息化', icon: 'fa-code' },
           { id: 'security', name: '安防弱电工程', icon: 'fa-shield-halved' },
@@ -612,7 +668,7 @@
           }
         };
 
-        return { scrolled, recentOrders, categories, activeTab, currentProducts, checkout, openCheckout, closeCheckout, processPayment };
+        return { scrolled, recentOrders, newsCategories, activeNewsCategory, currentNews, categories, activeTab, currentProducts, checkout, openCheckout, closeCheckout, processPayment };
       }
     }).mount('#app');
   </script>
