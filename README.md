@@ -90,6 +90,11 @@ MYSQL_ROOT_PASSWORD=GuangRun_DB_Pass_2026
 MYSQL_DATABASE=likeshop_db
 REDIS_PASSWORD=GuangRun_Redis_Pass_2026
 
+# nginx 宿主机端口，默认 80/443。仅当该端口已被宿主机其他服务占用时才需要覆盖，
+# 例如本机开发环境 80 端口冲突可设 NGINX_HTTP_PORT=8080。生产 VPS 通常无需改动。
+NGINX_HTTP_PORT=80
+NGINX_HTTPS_PORT=443
+
 # 微信支付 v3 回调验签所需，见下方「微信支付回调配置」
 WECHAT_API_V3_KEY=
 WECHAT_PLATFORM_PUBLIC_KEY_PATH=/etc/wechat/certs/wechatpay_platform.pem

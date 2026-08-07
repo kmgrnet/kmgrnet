@@ -129,20 +129,24 @@ cd ~/kmgrnet
 # 1. 停止并移除容器、网络（不含数据卷，因为本项目用 bind mount 而非具名 volume）
 docker compose down
 
-# 2. 删除本地数据目录（数据库、Redis 持久化数据）
+# 2. 确认容器已全部停止移除（应无 kmgrnet-nginx / kmgrnet-php / kmgrnet-mysql / kmgrnet-redis）
+docker ps -a | grep kmgrnet
+
+# 3. 删除本地数据目录（数据库、Redis 持久化数据）
 rm -rf mysql/data
 rm -rf redis/data
 
-# 3.（可选）删除已构建的镜像，释放磁盘空间
+# 4.（可选）删除已构建的镜像，释放磁盘空间
+docker images | grep kmgrnet
 docker rmi kmgrnet-php 2>/dev/null
 docker image prune -f
 
-# 4.（可选）删除敏感配置文件，避免残留密钥/证书
+# 5.（可选）删除敏感配置文件，避免残留密钥/证书
 rm -f .env
 rm -rf wechat/certs
 rm -rf nginx/ssl/kmgrnet.crt nginx/ssl/kmgrnet.key
 
-# 5.（可选）彻底删除整个项目目录
+# 6.（可选）彻底删除整个项目目录
 cd ~
 rm -rf ~/kmgrnet
 ```
@@ -208,3 +212,4 @@ docker compose up -d --build
 - **前端请求返回 521**：Cloudflare 无法连接到 VPS origin，检查 `api.kmgrnet.com` 是否正确解析到 VPS IP，且 VPS 的 80/443 端口已开放并监听。
 - **微信支付回调一直失败**：检查 `.env` 中 `WECHAT_API_V3_KEY` 是否已配置且正确；查看 `docker compose logs php` 中 `[wechat-notify]` 相关日志定位具体原因。
 - **容器无法启动**：`docker compose logs <service>` 查看具体报错，常见原因是端口被占用（`80`/`443`）或 `.env` 中变量缺失。
+- **nginx 容器起不来，报 `address already in use`**：说明宿主机 `80` 或 `443` 端口已被其他进程占用（`ss -tlnp | grep -E ':80 |:443 '` 排查占用者）。**不要**直接改 `docker-compose.yml` 里写死的端口号——这会影响所有部署环境。应在该台机器的 `.env` 中单独覆盖 `NGINX_HTTP_PORT` / `NGINX_HTTPS_PORT`（例如本机开发环境冲突时设 `NGINX_HTTP_PORT=8080`），公网生产 VPS 通常保持默认 `80`/`443` 即可，因为外部访问（含 Cloudflare 回源）默认按标准端口连接，非标准端口需要额外配置才能被外部访问。
