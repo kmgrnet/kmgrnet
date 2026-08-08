@@ -397,6 +397,8 @@
               <span v-for="tag in product.tags" :key="tag"
                 class="px-2.5 py-1 rounded bg-gr-wash text-xs text-slate-500 border border-gr-line">{{ tag }}</span>
             </div>
+            <button v-if="product.plan" @click="openPlanDetail(product)"
+              class="w-full py-2 mb-2.5 rounded-lg text-gr-blue font-medium text-sm border border-blue-100 bg-blue-50 hover:bg-blue-100 transition-colors">查看方案详情</button>
             <button v-if="product.buyable" @click="openCheckout(product)"
               class="w-full py-2.5 rounded-lg bg-gr-ink hover:bg-gr-blue text-white font-medium transition-colors text-sm">立即下单
               <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i></button>
@@ -413,6 +415,26 @@
         </div>
       </div>
     </section>
+
+    <div v-if="planDetail.show" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="closePlanDetail"></div>
+      <div class="bg-white w-full max-w-2xl max-h-[85vh] rounded-2xl shadow-2xl relative z-10 overflow-hidden border border-gr-line flex flex-col">
+        <div class="px-8 pt-8 pb-6 border-b border-gr-line relative shrink-0">
+          <button @click="closePlanDetail"
+            class="absolute top-6 right-6 w-8 h-8 rounded-full bg-gr-wash flex items-center justify-center text-slate-400 hover:text-gr-ink hover:bg-slate-100 transition-colors">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <p class="text-slate-400 text-sm font-medium mb-2">方案详情</p>
+          <h3 class="text-xl font-bold text-gr-ink leading-tight pr-8">{{ planDetail.item.planTitle }}</h3>
+        </div>
+        <div class="p-8 overflow-y-auto space-y-6">
+          <div v-for="section in planDetail.item.plan" :key="section.heading">
+            <h4 class="text-sm font-bold text-gr-blue mb-2">{{ section.heading }}</h4>
+            <p class="text-sm text-gr-sub leading-relaxed whitespace-pre-line">{{ section.body }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <section id="contact" class="py-14">
       <div class="max-w-7xl mx-auto px-6 grid gap-5 md:grid-cols-3">
@@ -709,9 +731,29 @@
         ];
         const activeTab = ref('software');
         const products = [
-          { id: 's1', category: 'software', title: '电商小程序全套定制', desc: '基于现代化微服务架构，包含商城、营销裂变与支付闭环，100%源码级交付。', icon: 'fa-mobile-screen', color: 'text-gr-cyan', tags: ['微信生态', '源码交付', '容器化'], price: 4000, buyable: true },
-          { id: 's2', category: 'software', title: 'DevOps 与云原生架构托管', desc: 'Docker 容器化部署、Linux 环境搭建及服务器全生命周期维护。', icon: 'fa-server', color: 'text-gr-blue', tags: ['Docker', 'Nginx', '高可用'], price: null, buyable: false },
-          { id: 's3', category: 'software', title: 'AI 私有化及企业内部系统', desc: '构建本地 vLLM 大模型知识库，及企业定制化 EHS 质检审批流系统。', icon: 'fa-brain', color: 'text-purple-500', tags: ['信息化流转', '安全质检'], price: null, buyable: false },
+          { id: 's1', category: 'software', title: '电商小程序全套定制', desc: '基于现代化微服务架构，包含商城、营销裂变与支付闭环，100%源码级交付。', icon: 'fa-mobile-screen', color: 'text-gr-cyan', tags: ['微信生态', '源码交付', '容器化'], price: 4000, buyable: true,
+            planTitle: '电商小程序定制解决方案',
+            plan: [
+              { heading: '定位', body: '微信生态内的高转化、容器化独立商城，标准交付价 4000 元。' },
+              { heading: '技术架构设计', body: '底层保障：采用现代化微服务架构，支持多端数据同步。系统整体进行 Docker 容器化部署，保障高并发场景下的平滑扩容。\n\n底层逻辑：深度适配微信生态（小程序/公众号），提供流畅的用户体验。在商品展示策略上，系统支持全量商品可视（包括无库存状态商品仍保持界面显示），保证品牌产品矩阵的完整曝光，引导用户进行缺货登记或关注。' },
+              { heading: '核心功能闭环', body: '交易与营销：包含完整的购物车、订单管理及微信支付闭环；内置丰富的营销裂变组件（如拼团、砍价、分销），快速拉动私域流量增量。' },
+              { heading: '交付标准', body: '100% 源码级交付，附完整的数据库字典与部署文档，保障企业二次开发与数据私有化安全。' }
+            ] },
+          { id: 's2', category: 'software', title: 'DevOps 与云原生架构托管', desc: 'Docker 容器化部署、Linux 环境搭建及服务器全生命周期维护。', icon: 'fa-server', color: 'text-gr-blue', tags: ['Docker', 'Nginx', '高可用'], price: null, buyable: false,
+            planTitle: 'DevOps 与云托管方案',
+            plan: [
+              { heading: '定位', body: '针对企业级云部署与运维的定制服务，提供全生命周期的保障式托管。' },
+              { heading: '云原生部署策略', body: '容器化与代理：核心业务服务全部采用 Docker 容器化部署，利用 Nginx 建立高可用的反向代理集群，实现流量负载均衡与故障转移。\n\n动静分离与加速：针对静态应用及大流量展示资源，规划利用 Cloudflare Pages 进行部署和全球加速，彻底释放主服务器带宽压力。' },
+              { heading: '高可用性与自动化运维', body: '监控与巡检：搭建全面的 Linux 环境状态监控看板，资源异常实时告警。\n\n弹性资源管理：可定制自动化云资源探测与创建脚本（支持高频 API 轮询监测），在业务高峰期自动调度云厂商实例资源，保障系统永不停机。' },
+              { heading: '服务模式', body: '提供从云基础设施规划、环境搭建、CI/CD 即时构建到后期故障排查的端到端维护。' }
+            ] },
+          { id: 's3', category: 'software', title: 'AI 私有化及企业内部系统', desc: '构建本地 vLLM 大模型知识库，及企业定制化 EHS 质检审批流系统。', icon: 'fa-brain', color: 'text-purple-500', tags: ['信息化流转', '安全质检'], price: null, buyable: false,
+            planTitle: 'AI 私有化及企业内部系统建设',
+            plan: [
+              { heading: '定位', body: '赋能传统企业管理（如安防工程、IT 硬件运维）的自动化与流程化，支持后续定制。' },
+              { heading: '内部管理系统（企业 EHS 与质检流程）', body: '业务支撑：采用稳定高效的 Spring Boot + MyBatis-Plus 架构开发，能够轻松应对复杂的安全质量检测（EHS）、硬件库存管理及企业数据持久化需求。\n\n流程管控：实现信息化无纸化流转，针对每一道质检问题留痕，支持多级节点与权限校验。' },
+              { heading: 'AI 大模型初始化应用', body: '本地知识库：依托本地化部署的 vLLM 框架，将企业过往的安防施工方案、设备技术手册、质检合规文档转化为本地大模型知识库。\n\n智能搜索与辅助：员工可通过内部系统直接进行自然语言搜索，AI 即时生成合规建议或技术解答，确保企业核心数据绝对不出网，保障信息安全。' }
+            ] },
           { id: 'sec1', category: 'security', title: '安防监控与智能门禁布线', desc: '针对厂区、办公楼提供高清视频监控、门禁考勤与防盗报警系统规划与施工。', icon: 'fa-video', color: 'text-emerald-500', tags: ['现场勘测', '综合布线'], price: 500, priceLabel: '定金/勘测费', buyable: true },
           { id: 'sec2', category: 'security', title: '标准化安防硬件采购', desc: '品牌网络摄像机、硬盘录像机、交换机及周边耗材直供。', icon: 'fa-box', color: 'text-orange-500', tags: ['现货发售', '硬件质保'], price: null, buyable: false, stock: 'out_of_stock' },
           { id: 'net1', category: 'network', title: '企业级专网与 VPN 方案', desc: '构建跨区域安全网络互联，实现异地办公数据加密传输及内网穿透。', icon: 'fa-network-wired', color: 'text-indigo-500', tags: ['数据加密', '稳定高速'], price: null, buyable: false },
@@ -722,6 +764,13 @@
           { id: 'ret1', category: 'retail', title: '光润严选 - 员工福利与鞋服', desc: '品牌鞋服、日用百货代销，支持企业集中采购及员工福利代发。', icon: 'fa-shirt', color: 'text-pink-500', tags: ['生活百货', '快递包邮'], price: null, buyable: false, priceLabel: '前往商城选购', stock: 'in_stock' }
         ];
         const currentProducts = computed(() => products.filter(p => p.category === activeTab.value));
+        const planDetail = ref({ show: false, item: {} });
+        const openPlanDetail = (item) => {
+          planDetail.value = { show: true, item };
+        };
+        const closePlanDetail = () => {
+          planDetail.value.show = false;
+        };
         const stockMeta = (stock) => {
           const map = {
             in_stock: { label: '现货', dot: 'bg-emerald-500', badge: 'bg-emerald-50 text-emerald-700' },
@@ -821,7 +870,7 @@
           }
         };
 
-        return { recentOrders, newsCategories, activeNewsCategory, currentNews, newsDetail, openNewsDetail, closeNewsDetail, categories, activeTab, currentProducts, stockMeta, checkout, openCheckout, closeCheckout, processPayment, amapUrl, baiduMapUrl, channelDrawer, openChannelDrawer, closeChannelDrawer, goToStandaloneShop, scrollToContact };
+        return { recentOrders, newsCategories, activeNewsCategory, currentNews, newsDetail, openNewsDetail, closeNewsDetail, categories, activeTab, currentProducts, stockMeta, planDetail, openPlanDetail, closePlanDetail, checkout, openCheckout, closeCheckout, processPayment, amapUrl, baiduMapUrl, channelDrawer, openChannelDrawer, closeChannelDrawer, goToStandaloneShop, scrollToContact };
       }
     }).mount('#app');
   </script>
