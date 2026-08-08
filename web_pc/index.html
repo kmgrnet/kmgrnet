@@ -144,8 +144,8 @@
           </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          <a v-for="item in currentNews" :key="item.id" :href="item.href || '#'"
-            class="group block rounded-xl overflow-hidden card transition-all duration-200">
+          <button v-for="item in currentNews" :key="item.id" type="button" @click="openNewsDetail(item)"
+            class="group block rounded-xl overflow-hidden card transition-all duration-200 text-left w-full">
             <div class="aspect-[16/9] bg-gr-wash overflow-hidden">
               <img :src="item.image" :alt="item.title" class="w-full h-full object-cover" loading="lazy" />
             </div>
@@ -158,11 +158,33 @@
                 <span>{{ item.date }}</span>
               </div>
             </div>
-          </a>
+          </button>
         </div>
         <div v-if="!currentNews.length" class="text-center text-gr-sub py-16">该分类下暂无内容，敬请期待。</div>
       </div>
     </section>
+
+    <div v-if="newsDetail.show" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="closeNewsDetail"></div>
+      <div class="bg-white w-full max-w-2xl max-h-[85vh] rounded-2xl shadow-2xl relative z-10 overflow-hidden border border-gr-line flex flex-col">
+        <div class="aspect-[16/9] bg-gr-wash overflow-hidden shrink-0">
+          <img :src="newsDetail.item.image" :alt="newsDetail.item.title" class="w-full h-full object-cover" />
+        </div>
+        <button @click="closeNewsDetail"
+          class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-slate-500 hover:text-gr-ink hover:bg-white transition-colors shadow">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="p-8 overflow-y-auto">
+          <span class="inline-block text-xs font-semibold text-gr-blue bg-blue-50 rounded px-2 py-0.5">{{ newsDetail.item.tag }}</span>
+          <h3 class="mt-3 text-xl font-bold text-gr-ink leading-snug">{{ newsDetail.item.title }}</h3>
+          <div class="mt-2 flex items-center gap-3 text-xs text-slate-400">
+            <span>{{ newsDetail.item.source }}</span>
+            <span>{{ newsDetail.item.date }}</span>
+          </div>
+          <p class="mt-5 text-sm text-gr-sub leading-relaxed whitespace-pre-line">{{ newsDetail.item.content || newsDetail.item.summary }}</p>
+        </div>
+      </div>
+    </div>
 
     <section class="py-4 relative z-10">
       <div class="max-w-7xl mx-auto px-6">
@@ -660,7 +682,7 @@
         ];
         const activeNewsCategory = ref('company');
         const newsItems = [
-          { id: 'n1', category: 'company', tag: '公司新闻', image: '/images/brand/讨论.png', title: '光润网络完成新一轮团队扩编，新增云原生交付小组', summary: '为承接更多企业级 DevOps 与云部署项目，公司组建专职云原生交付团队，进一步提升响应效率。', source: '光润网络', date: '2026-08-01' },
+          { id: 'n1', category: 'company', tag: '公司新闻', image: '/images/brand/讨论.png', title: '光润网络完成新一轮团队扩编，新增云原生交付小组', summary: '为承接更多企业级 DevOps 与云部署项目，公司组建专职云原生交付团队，进一步提升响应效率。', content: '【光润网络最新动态】步履不停，团队再升级！🚀\n\n为了更好地承接日益增长的企业级 DevOps 与云部署项目，光润网络已顺利进行新一轮人员扩编，正式成立专职的"云原生交付小组"！\n\n新团队的集结，促使我们在云原生领域的交付与服务能力迈上新的台阶。未来，我们将以更丰富的技术力量、更敏捷的团队协作，全力赋能企业的数字化转型之路。拥抱云原生，期待新团队在云原生实战中创造更多精彩！', source: '光润网络', date: '2026-08-01' },
           { id: 'n2', category: 'company', tag: '公司新闻', image: '/images/brand/安防战略合作.png', title: '光润网络与本地制造业客户达成安防工程战略合作', summary: '双方将在厂区安防布线、智能门禁等场景展开长期合作，首批项目已进入勘测阶段。', source: '光润网络', date: '2026-07-20' },
           { id: 'n3', category: 'industry', tag: '行业动态', image: '/images/news/industry-growth.svg', title: '2026 年中小企业数字化转型投入持续增长', summary: '行业报告显示，中小企业在官网商城、私有化部署等方向的预算同比提升明显。', source: '行业观察', date: '2026-07-15' },
           { id: 'n4', category: 'industry', tag: '行业动态', image: '/images/news/industry-security.svg', title: '工业安防合规要求趋严，企业加快弱电系统升级', summary: '多地陆续出台厂区安防新规，带动监控与门禁系统的更新需求。', source: '行业观察', date: '2026-07-05' },
@@ -670,6 +692,13 @@
           { id: 'n8', category: 'case', tag: '客户案例', image: '/images/news/case-factory.svg', title: '某制造企业安防系统改造后运营稳定性达 99.9%', summary: '通过监控、门禁与告警系统的统一规划实施，客户厂区安全事故显著下降。', source: '客户案例', date: '2026-06-18' }
         ];
         const currentNews = computed(() => newsItems.filter(n => n.category === activeNewsCategory.value));
+        const newsDetail = ref({ show: false, item: {} });
+        const openNewsDetail = (item) => {
+          newsDetail.value = { show: true, item };
+        };
+        const closeNewsDetail = () => {
+          newsDetail.value.show = false;
+        };
 
         const categories = [
           { id: 'software', name: '软件与信息化', icon: 'fa-code' },
@@ -792,7 +821,7 @@
           }
         };
 
-        return { recentOrders, newsCategories, activeNewsCategory, currentNews, categories, activeTab, currentProducts, stockMeta, checkout, openCheckout, closeCheckout, processPayment, amapUrl, baiduMapUrl, channelDrawer, openChannelDrawer, closeChannelDrawer, goToStandaloneShop, scrollToContact };
+        return { recentOrders, newsCategories, activeNewsCategory, currentNews, newsDetail, openNewsDetail, closeNewsDetail, categories, activeTab, currentProducts, stockMeta, checkout, openCheckout, closeCheckout, processPayment, amapUrl, baiduMapUrl, channelDrawer, openChannelDrawer, closeChannelDrawer, goToStandaloneShop, scrollToContact };
       }
     }).mount('#app');
   </script>
